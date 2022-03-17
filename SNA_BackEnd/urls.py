@@ -17,6 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path("SNA/", include("SNA.urls")),
+    path("SNA/", include("SNA.urls")),  # 把SNA app中的url绑定到root/SNA/下
     path('admin/', admin.site.urls),
 ]

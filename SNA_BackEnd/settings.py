@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "SNA.apps.SnaConfig",  # 在site中注册app SNA
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

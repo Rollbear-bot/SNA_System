@@ -1,0 +1,10 @@
+{% if latest_question_list %}
+    <ul>
+{#    从调用该template的view中取得context，填充到此#}
+    {% for dataset in dataset_lt %}
+        <li><a href="/SNA/{{ dataset.id }}/">{{ dataset.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
