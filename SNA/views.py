@@ -1,19 +1,27 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+import os
+
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from .models import Dataset
 from django.template import loader
+from django.urls import reverse
+from tiles.alg.TILES import TILES
+from datetime import datetime
 
 # Create your views here.
 # view要么返回HttpResponse，要么返回HttpException
+
+# view可以通过generic的方式来继承
 
 
 def index(req):
     """默认转发页面，展示最多5个最新的数据集
     点击数据集名可以跳转到数据集详情页"""
     # return HttpResponse("hello!")
-    lasted_pub_lt = Dataset.objects.order_by("pub_date")[:5]
+    lasted_pub_lt = Dataset.objects.order_by("pub_date")[:20]
     template = loader.get_template("SNA/index.html")
-    # 关联HTML的内容
+    # 关联HTML的内容, the context is a dictionary
+    # mapping template variable names to Python objects.
     context = {
         "dataset_lt": lasted_pub_lt
     }
@@ -22,9 +30,63 @@ def index(req):
 
 
 def dataset_detail(req, dataset_id):
-    return HttpResponse(f"You're looking at dataset {dataset_id}.")
+    """数据集详情页的视图，
+    如果数据集id对应的数据集不存在，则转发到404异常"""
+    try:
+        dataset = Dataset.objects.get(pk=dataset_id)
+    except Dataset.DoesNotExist:
+        raise Http404("Dataset does not exist.")
+    # 上面4行的简便写法：question = get_object_or_404(Question, pk=question_id)
+    # 调用template更快捷的方法：使用render
+    return render(req, "SNA/detail.html", {"dataset": dataset})
 
 
-def dataset_upload(req, dataset_id):
-    return HttpResponse(f"visit here to upload a dataset.")
+def dataset_upload(req):
+    # 此处应当处理文件传输和存储
+    # 此处使用redirect（重定向）而不是response是为了防止用户点击"返回"导致数据被提交两次
+    # return HttpResponseRedirect(
+    #     reverse('SNA:d_detail', args=(dataset.id,)))
 
+    BASE_DIR = "SNA/dataset_store/"
+    obj = req.FILES.get('filename', '1')
+    print(obj.name)
+
+    model = Dataset(name=req.POST.get('dataset_name'), path=os.path.join(BASE_DIR, obj.name),
+                    pub_date=datetime.now())  # todo::添加用户信息
+
+    f = open(os.path.join(BASE_DIR, obj.name), 'wb')
+
+    for chunk in obj.chunks():
+        f.write(chunk)
+    f.close()
+    model.save()
+    # return render(request, 'clashphone/test.html')
+    # return HttpResponse('OK')
+    return index(req)
+
+
+def run_tiles(req, dataset_id):
+    dataset = get_object_or_404(Dataset, pk=dataset_id)
+
+    # 运行TILES算法
+    obs = 30
+    ttl = 240
+    filename = ""  # todo::设置用户上传文件的存放路径
+    dump_dir = ""  # todo::设置算法执行结果的存放路径
+    model = TILES(obs=obs, ttl=ttl, filename=filename, path=dump_dir)
+    model.execute()
+
+    # 返回数据集详情页
+    return HttpResponseRedirect(
+        reverse('SNA:d_detail', args=(dataset.id,)))
+
+
+def run_tgat(req, dataset_id):
+    dataset = get_object_or_404(Dataset, pk=dataset_id)
+
+    # todo::调用命令行执行tgat
+    pass
+
+    # 返回数据集详情页
+    return HttpResponseRedirect(
+        reverse('SNA:d_detail', args=(dataset.id,)))

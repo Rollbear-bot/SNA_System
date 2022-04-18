@@ -1,0 +1,12 @@
+<form action="{% url 'SNA:d_detail' dataset.id %}" method="post">
+{% csrf_token %}
+<fieldset>
+    <legend><h1>{{ dataset.name }}</h1></legend>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{#        <input type="radio" name="choice" id="choice{{ forloop.counter }}" #}
+{#               value="{{ choice.id }}">#}
+{#此处替换为上传文件#}
+        <label>{{ dataset.path }}</label><br>
+</fieldset>
+<input type="submit" value="path">
+</form>

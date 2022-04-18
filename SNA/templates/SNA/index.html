@@ -1,10 +1,25 @@
-{% if latest_question_list %}
+{% load static %}
+{#使用tag调用静态文件（CSS）#}
+<link rel="stylesheet" type="text/css" href="{% static "SNA/style.css" %}">
+
+{% if dataset_lt %}
     <ul>
 {#    从调用该template的view中取得context，填充到此#}
     {% for dataset in dataset_lt %}
-        <li><a href="/SNA/{{ dataset.id }}/">{{ dataset.name }}</a></li>
+{#        使用template tag "url" 来将url于此处解耦，传入url.py中定义路径的name#}
+        <li><a href="{% url "SNA:d_detail" dataset.id %}">{{ dataset.name }}</a></li>
+{#        替代此语句：<li><a href="/SNA/{{ dataset.id }}/">{{ dataset.name }}</a></li>#}
     {% endfor %}
     </ul>
 {% else %}
-    <p>No polls are available.</p>
+    <p>No Dataset are available.</p>
 {% endif %}
+
+{# 提交表单以新建（上传）一个数据集 #}
+<p>新建数据集</p>
+<form action="{% url 'SNA:d_upload' %}" method="post" enctype="multipart/form-data">
+        <input type="file" name="filename">
+        <input type ="text" name ="dataset_name">
+        <input type="submit">
+        {% csrf_token %}
+    </form>

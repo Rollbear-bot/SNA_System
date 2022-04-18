@@ -25,8 +25,8 @@ class Dataset(models.Model):
     # 用户上传该数据集的日期时间
     pub_date = models.DateTimeField('date published')  # 可定义human-readable name
     # 上传者（此处是否应该使用外键？）
-    # PROTECT关系表示有数据集存在时，上传者（用户）不能被删除
-    owner = models.ForeignKey(User, on_delete=models.PROTECT)
+    # PROTECT关系表示有数据集存在时，上传者（用户）不能被删除，todo::添加用户信息
+    owner = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return f"{self.name}, uploaded at {self.pub_date}, by {self.owner}"
