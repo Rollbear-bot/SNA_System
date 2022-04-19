@@ -8,5 +8,41 @@
 {#此处替换为上传文件#}
         <label>{{ dataset.path }}</label><br>
 </fieldset>
-<input type="submit" value="path">
+<input type="submit" value="null">
 </form>
+
+
+<h2>选择分析任务</h2>
+{# 此表单用于提交算法执行任务 #}
+<form action="{% url 'SNA:run_alg' %}" method="post">
+    {% csrf_token %}
+    <select name="task_select">
+        <option>社区演化分析</option>
+        <option>节点联系预测</option>
+    </select>
+    <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
+    <input type="submit" value="确定">
+</form>
+
+
+<table border="1">
+{# 表头 #}
+  <tr>
+    <th>任务名</th>
+    <th>调用算法</th>
+    <th>开始时间</th>
+    <th>执行状态</th>
+    <th>执行结果</th>
+  </tr>
+
+{# 行 #}
+    {% for record in run_records %}
+  <tr>
+    <td>{{ record.task_name }}</td>
+    <td>{{ record.alg_name }}</td>
+    <td>{{ record.exec_datetime }}</td>
+    <td>{{ record.status }}</td>
+    <td> - </td>
+  </tr>
+    {% endfor %}
+</table>

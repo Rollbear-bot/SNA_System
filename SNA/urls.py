@@ -10,4 +10,5 @@ urlpatterns = [
     # 数据集相关视图
     path('<int:dataset_id>/', views.dataset_detail, name='d_detail'),
     path('upload/', views.dataset_upload, name='d_upload'),
+    path('run_alg/', views.run_alg, name='run_alg')
 ]

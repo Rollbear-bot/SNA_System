@@ -30,3 +30,21 @@ class Dataset(models.Model):
 
     def __str__(self):
         return f"{self.name}, uploaded at {self.pub_date}, by {self.owner}"
+
+
+class RunResult(models.Model):
+    """算法执行结果"""
+    # 开始执行的时间
+    exec_datetime = models.DateTimeField('date execute')
+    # 外键链接到一个数据集
+    dataset_used = models.ForeignKey(Dataset, on_delete=models.PROTECT)
+    # 调用的算法名称
+    alg_name = models.CharField(max_length=200)
+    # 任务名
+    task_name = models.CharField(max_length=200)
+
+    # 算法执行状态从tag文件中读取，不在数据库中保存
+    # 执行结果不在数据库中保存
+
+    def __str__(self):
+        return f"on '{self.dataset_used.name}', start at {self.exec_datetime}"
