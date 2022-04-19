@@ -81,9 +81,9 @@ def dataset_upload(req):
         f.write(chunk)
     f.close()
     model.save()
-    # return render(request, 'clashphone/test.html')
-    # return HttpResponse('OK')
-    return index(req)
+
+    return HttpResponseRedirect(
+        reverse('SNA:index'))
 
 
 def run_alg(req):
@@ -109,7 +109,8 @@ def run_alg(req):
     p.start()
 
     # 刷新详情页
-    return dataset_detail(req, dataset_id)
+    return HttpResponseRedirect(
+        reverse('SNA:d_detail', args=(dataset.id,)))
 
 
 # def run_tiles(req, dataset_id):
