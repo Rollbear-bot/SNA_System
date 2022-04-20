@@ -7,8 +7,9 @@
 {#               value="{{ choice.id }}">#}
 {#此处替换为上传文件#}
         <label>{{ dataset.path }}</label><br>
+        <label>所有者：{{ username }}</label>
 </fieldset>
-<input type="submit" value="null">
+<input type="submit" value="null" hidden>
 </form>
 
 
@@ -18,13 +19,14 @@
     {% csrf_token %}
     <select name="task_select">
         <option>社区演化分析</option>
-        <option>节点联系预测</option>
+{#        <option>节点联系预测</option>#}
     </select>
     <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
-    <input type="submit" value="确定">
+    <input type="submit" value="启动">
 </form>
 
 
+<h2>任务执行记录</h2>
 <table border="1">
 {# 表头 #}
   <tr>
@@ -36,6 +38,7 @@
   </tr>
 
 {# 行 #}
+{% if run_records %}
     {% for record in run_records %}
   <tr>
     <td>{{ record.task_name }}</td>
@@ -45,4 +48,8 @@
     <td> - </td>
   </tr>
     {% endfor %}
+{% else %}
+    <td>暂无记录</td>
+{% endif %}
+
 </table>
