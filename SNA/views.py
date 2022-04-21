@@ -21,6 +21,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 
+BASE_DIR = "SNA/dataset_store/"
+
 
 # 注册
 class Register(View):
@@ -135,7 +137,9 @@ def dataset_detail(req, dataset_id):
         except FileNotFoundError:
             s = "未知"
         # run_status_map[record.pk] = s
+        # 动态绑定
         record.status = s
+        record.show_result = s == "已完成"
 
     username = dataset.owner.username if dataset.owner else "未知"
 
@@ -156,17 +160,17 @@ def dataset_upload(req):
 
     BASE_DIR = "SNA/dataset_store/"
     obj = req.FILES.get('filename', '1')
-    print(obj.name)
 
-    model = Dataset(name=req.POST.get('dataset_name'), path=os.path.join(BASE_DIR, obj.name),
+    model = Dataset(name=req.POST.get('dataset_name'), path=obj.name,
                     pub_date=datetime.now() + timedelta(hours=8), owner=req.user)
+    model.save()
 
-    f = open(os.path.join(BASE_DIR, obj.name), 'wb')
+    # 改名，防止文件重名
+    f = open(os.path.join(BASE_DIR, str(model.pk) + "." + obj.name.split(".")[-1]), 'wb')
 
     for chunk in obj.chunks():
         f.write(chunk)
     f.close()
-    model.save()
 
     return HttpResponseRedirect(
         reverse('SNA:index'))
@@ -192,7 +196,9 @@ def run_alg(req):
         dump_dir = "./SNA/alg_result/" + str(record_model.pk) + "/"
         if not os.path.exists(dump_dir):
             os.mkdir(dump_dir)
-        p = Process(target=run_tiles, args=(dataset.path, dump_dir))
+        p = Process(target=run_tiles,
+                    args=(BASE_DIR + str(dataset.pk) + "." + dataset.path.split(".")[-1],
+                          dump_dir))
     elif alg_name == "TGAT":
         pass
     p.start()

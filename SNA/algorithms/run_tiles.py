@@ -18,7 +18,8 @@ def run_tiles(file_path, dump_dir):
         tag.write("已完成")
         tag.close()
 
-    except Exception:
+    except Exception as e:
+        print(e)
         tag = open(dump_dir + "tiles.tag", "w", encoding="utf8")
         tag.write("出错")
         tag.close()

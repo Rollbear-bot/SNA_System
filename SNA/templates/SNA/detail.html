@@ -1,3 +1,9 @@
+{#<link href="https://cdn.bootcdn.net/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">#}
+{#<script src="https://cdn.bootcdn.net/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>#}
+{#<script src="https://cdn.bootcdn.net/jquery/3.3.1/jquery.js"></script>#}
+{#<script src="https://cdn.bootcdn.net/popper.js/1.15.0/umd/popper.js"></script>#}
+
+
 <form action="{% url 'SNA:d_detail' dataset.id %}" method="post">
 {% csrf_token %}
 <fieldset>
@@ -45,7 +51,15 @@
     <td>{{ record.alg_name }}</td>
     <td>{{ record.exec_datetime }}</td>
     <td>{{ record.status }}</td>
-    <td> - </td>
+    <td> {% if record.show_result %}
+        <form action="{% url "SNA:show_result" %}" method="post">
+            {% csrf_token %}
+            <input type="text" value="{{ record.pk }}" name="record_id" hidden>
+            <input type="submit" value="查看结果">
+        </form>
+        {% else %} ---
+        {% endif %}
+    </td>
   </tr>
     {% endfor %}
 {% else %}

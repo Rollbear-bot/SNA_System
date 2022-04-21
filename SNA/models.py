@@ -23,6 +23,8 @@ class Dataset(models.Model):
     # PROTECT关系表示有数据集存在时，上传者（用户）不能被删除，todo::添加用户信息
     owner = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
+    file = models.FileField(upload_to="./SNA/dataset_store/", null=True)
+
     def __str__(self):
         return f"{self.name}, uploaded at {self.pub_date}, by {self.owner}"
 
