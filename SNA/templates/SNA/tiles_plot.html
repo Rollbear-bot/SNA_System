@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="/static/js/echarts.js"></script>
+  </head>
+
+<body>
+  <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+  <div id="main" style="width: 600px;height:400px;"></div>
+
+<script type="text/javascript">
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('main'));
+
+      // network meta data
+      var lt = {{ data|safe }};
+
+      // 指定图表的配置项和数据
+      option = {
+          title: {
+            text: ''
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['新生事件数量', '消亡事件数量', '分裂事件数量', '合并事件数量', '社区数量']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: lt.x_axis
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [
+            {
+              name: '新生事件数量',
+              type: 'line',
+              {#stack: 'Total',#}
+              data: lt.birth_count,
+            },
+            {
+              name: '消亡事件数量',
+              type: 'line',
+              {#stack: 'Total',#}
+              data: lt.death_count,
+            },
+            {
+              name: '分裂事件数量',
+              type: 'line',
+              {#stack: 'Total',#}
+              data: lt.split_count
+            },
+            {
+              name: '合并事件数量',
+              type: 'line',
+              {#stack: 'Total',#}
+              data: lt.merge_count
+            },
+            {
+              name: '社区数量',
+              type: 'line',
+              stack: 'Total',
+              data: lt.comm_count
+            }
+          ]
+        };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+    </script>
+
+
+</body>
+</html>

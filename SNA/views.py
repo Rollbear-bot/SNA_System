@@ -8,7 +8,7 @@ from django.urls import reverse
 from datetime import datetime, timedelta
 from multiprocessing import Process
 from SNA.algorithms.run_tiles import run_tiles
-
+from SNA.algorithms.tiles_parser import get_network_meta
 
 # Create your views here.
 # view要么返回HttpResponse，要么返回HttpException
@@ -210,4 +210,10 @@ def run_alg(req):
 
 def tiles_plot(req):
     """TILES的结果的可视化"""
-    pass
+    # 数据构造
+    record_id = req.POST.get("record_id")
+    data = get_network_meta(f"SNA/alg_result/{record_id}/")
+
+    # 转发到可视化页面的模板
+    return render(req, "SNA/tiles_plot.html",
+                  {"data": data})
