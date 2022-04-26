@@ -1,9 +1,9 @@
 {% load static %}
 {#使用tag调用静态文件（CSS）#}
-<link rel="stylesheet" type="text/css" href="{% static "SNA/style.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static 'SNA/style.css' %}">
 
 <h2>欢迎，{{ username }}</h2>
-<a href="{% url "SNA:login" %}">切换账号</a>
+<a href="{% url 'SNA:login' %}">切换账号</a>
 
 <h2>现有数据集</h2>
 {% if dataset_lt %}
@@ -11,7 +11,7 @@
 {#    从调用该template的view中取得context，填充到此#}
     {% for dataset in dataset_lt %}
 {#        使用template tag "url" 来将url于此处解耦，传入url.py中定义路径的name#}
-        <li><a href="{% url "SNA:d_detail" dataset.id %}">{{ dataset.name }}</a></li>
+        <li><a href="{% url 'SNA:d_detail' dataset.id %}">{{ dataset.name }}</a></li>
 {#        替代此语句：<li><a href="/SNA/{{ dataset.id }}/">{{ dataset.name }}</a></li>#}
     {% endfor %}
     </ul>

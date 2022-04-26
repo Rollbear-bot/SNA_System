@@ -52,7 +52,7 @@
     <td>{{ record.exec_datetime }}</td>
     <td>{{ record.status }}</td>
     <td> {% if record.show_result %}
-        <form action="{% url "SNA:show_result" %}" method="post">
+        <form action="{% url 'SNA:show_result' %}" method="post">
             {% csrf_token %}
             <input type="text" value="{{ record.pk }}" name="record_id" hidden>
             <input type="submit" value="查看结果">
