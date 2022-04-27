@@ -1,18 +1,15 @@
 
-<form action="{% url 'SNA:d_detail' dataset.id %}" method="post">
 {% csrf_token %}
 <fieldset>
     <legend><h1>{{ dataset.name }}</h1></legend>
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-{#        <input type="radio" name="choice" id="choice{{ forloop.counter }}" #}
-{#               value="{{ choice.id }}">#}
-{#此处替换为上传文件#}
-        <label>{{ dataset.path }}</label><br>
-        <label>所有者：{{ username }}</label>
+        <label>数据文件：{{ dataset.path }}</label><br>
+        <label>所有者：{{ username }}</label><br>
+        <label>访问权限：{{ access }}</label>
 </fieldset>
 <input type="submit" value="null" hidden>
-</form>
 
+<p><a href="{% url 'SNA:index' %}">返回主页</a></p>
 
 <h2>选择分析任务</h2>
 {# 此表单用于提交算法执行任务 #}

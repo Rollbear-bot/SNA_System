@@ -148,7 +148,8 @@ def dataset_detail(req, dataset_id):
     return render(req, "SNA/detail.html",
                   {"dataset": dataset,
                    "run_records": run_records,
-                   "username": username})
+                   "username": username,
+                   "access": "私有" if dataset.is_private else "公开"})
 
 
 def dataset_upload(req):
