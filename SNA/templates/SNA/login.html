@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>山羊的前端小屋</title>
+    <title>登陆</title>
     <style>
         body{
             /* 设置背景渐变 */
@@ -83,13 +83,20 @@
         <div class="c">
             <div class="d">
                 <h1>Login</h1>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} fade in">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
                 <form action="{% url 'SNA:login' %}" method="post">
                     {% csrf_token %}
-                    <input type="text" class="e" placeholder="USER NAME" name="username">
-    <!--                <input type="text" class="e" placeholder="ACCOUNT">-->
-                    <input type="password" class="e" placeholder="PASSWORD" name="password">
-    <!--                <a href="#" class="f">Forget the passrword?</a>-->
-    <!--                <a href="#" class="g">Login</a>-->
+                    <input type="text" class="e" placeholder="用户名" name="username">
+                    <input type="password" class="e" placeholder="密码" name="password">
+
                     <input class="g" type="submit" value="登录">
                     <div class="f">
                         还没有账号？请<a href="{% url 'SNA:register' %}">注册</a>

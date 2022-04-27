@@ -28,9 +28,6 @@ BASE_DIR = "SNA/dataset_store/"
 class Register(View):
 
     def get(self, request):
-        # 检测用户已登录过点击注册则跳转主页，注销才能重新注册，会保存15分钟登录状态
-        if request.user.is_authenticated:
-            return HttpResponseRedirect(reverse('SNA:index'))
         return render(request, 'SNA/register.html')
 
     def post(self, request):
