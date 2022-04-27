@@ -18,5 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path("SNA/", include("SNA.urls")),  # 把SNA app中的url绑定到root/SNA/下
+    path("", include("SNA.urls")),  # "/"绑定到"/SNA"
     path('admin/', admin.site.urls),
 ]
