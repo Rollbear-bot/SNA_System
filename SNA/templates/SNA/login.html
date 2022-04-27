@@ -1,29 +1,102 @@
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} fade in">
-            {{ message }}
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>山羊的前端小屋</title>
+    <style>
+        body{
+            /* 设置背景渐变 */
+            background-image: linear-gradient(to left,
+            #9c88ff,#3cadeb);
+            display: flex;
+            justify-content: center;
+        }
+        .a{
+            position:relative;
+            top: 100px;
+            width: 1100px;
+            height: 550px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.8);
+            display: flex;
+        }
+        .b{
+            width: 800px;
+            height: 550px;
+            background-image: url("{% static 'images/1441650974759_.pic.jpg'%}");
+            /* 让图片适应大小 */
+            background-size: cover;
+        }
+        .c{
+            width: 300px;
+            height: 550px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .d{
+            width: 250px;
+            height: 500px;
+        }
+        .d h1{
+            font: 900 30px '';
+        }
+        .e{
+            width: 230px;
+            margin: 20px 0;
+            outline: none;
+            border: 0;
+            padding: 10px;
+            border-bottom: 3px solid rgb(80,80,170);
+            font: 900 16px '';
+        }
+        .f{
+            float: right;
+            text-decoration: none;
+            margin: 10px 0;
+            color:rgba(0,0,0,.8);
+        }
+        .g{
+            position: absolute;
+            margin: 20px;
+            bottom: 40px;
+            display: block;
+            width: 200px;
+            height: 60px;
+            font: 900 30px '';
+            text-decoration: none;
+            line-height: 50px;
+            border-radius: 30px;
+            background-image: linear-gradient(to left,
+            #9c88ff,#3cadeb);
+            text-align: center;
+            color: whitesmoke;
+        }
+    </style>
+</head>
+<body>
+    <div class="a">
+        <div class="b"></div>
+        <div class="c">
+            <div class="d">
+                <h1>Login</h1>
+                <form action="{% url 'SNA:login' %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" class="e" placeholder="USER NAME" name="username">
+    <!--                <input type="text" class="e" placeholder="ACCOUNT">-->
+                    <input type="password" class="e" placeholder="PASSWORD" name="password">
+    <!--                <a href="#" class="f">Forget the passrword?</a>-->
+    <!--                <a href="#" class="g">Login</a>-->
+                    <input class="g" type="submit" value="登录">
+                    <div class="f">
+                        还没有账号？请<a href="{% url 'SNA:register' %}">注册</a>
+                    </div>
+                </form>
+            </div>
         </div>
-    {% endfor %}
-{% endif %}
-
-
-<form action="{% url 'SNA:login' %}" method="post">
-    {% csrf_token %}
-    <table border="1">
-    {# 行 #}
-      <tr>
-        <td>用户名</td>
-        <td><input type="text" name="username"></td>
-      </tr>
-      <tr>
-        <td>密码</td>
-        <td><input type="password" name="password"></td>
-      </tr>
-
-        <tr>
-        <td><input type="submit" value="登录"></td>
-      </tr>
-    </table>
-</form>
-
-还没有账号？请<a href="{% url 'SNA:register' %}">注册</a>
+    </div>
+</body>
+</html>

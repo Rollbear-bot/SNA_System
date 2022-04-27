@@ -24,6 +24,7 @@
 <form action="{% url 'SNA:d_upload' %}" method="post" enctype="multipart/form-data">
         <input type="file" name="filename">
         <input type ="text" name ="dataset_name">
+        <input type="checkbox" name="is_private" checked=True>私有
         <input type="submit">
         {% csrf_token %}
     </form>

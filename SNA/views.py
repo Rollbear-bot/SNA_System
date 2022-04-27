@@ -99,7 +99,11 @@ def index(req):
     if not req.user.is_authenticated:
         return HttpResponseRedirect(reverse('SNA:login'))
 
-    lasted_pub_lt = Dataset.objects.order_by("pub_date")[:20]
+    lasted_pub_lt = Dataset.objects.order_by("pub_date")
+    # 仅显示当前登录用户拥有的数据集，及公开数据集
+    lasted_pub_lt = [e for e in lasted_pub_lt if e.is_private is False
+                     or (e.owner and e.owner.pk == req.user.pk)]
+
     template = loader.get_template("SNA/index.html")
     # 关联HTML的内容, the context is a dictionary
     # mapping template variable names to Python objects.
@@ -153,8 +157,6 @@ def dataset_detail(req, dataset_id):
 def dataset_upload(req):
     # 此处应当处理文件传输和存储
     # 此处使用redirect（重定向）而不是response是为了防止用户点击"返回"导致数据被提交两次
-    # return HttpResponseRedirect(
-    #     reverse('SNA:d_detail', args=(dataset.id,)))
     if not req.user.is_authenticated:
         return HttpResponseRedirect(reverse('SNA:login'))
 
@@ -162,7 +164,8 @@ def dataset_upload(req):
     obj = req.FILES.get('filename', '1')
 
     model = Dataset(name=req.POST.get('dataset_name'), path=obj.name,
-                    pub_date=datetime.now() + timedelta(hours=8), owner=req.user)
+                    pub_date=datetime.now() + timedelta(hours=8), owner=req.user,
+                    is_private=req.POST.get('is_private') == "on")
     model.save()
 
     # 改名，防止文件重名

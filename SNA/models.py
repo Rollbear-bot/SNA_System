@@ -25,6 +25,9 @@ class Dataset(models.Model):
 
     file = models.FileField(upload_to="./SNA/dataset_store/", null=True)
 
+    # 公开or私有，默认值为私有
+    is_private = models.BooleanField(default=True)
+
     def __str__(self):
         return f"{self.name}, uploaded at {self.pub_date}, by {self.owner}"
 
