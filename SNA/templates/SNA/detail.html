@@ -6,13 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>数据集详情</title>
-    <script src="//unpkg.com/vue@next"></script>
-    <script src="//unpkg.com/element-plus"></script>
+
+<!--    导入vue和element ui -->
+<!--    <script src="//unpkg.com/vue@next"></script>-->
+<!--    <script src="//unpkg.com/element-plus"></script>-->
 <!--    导入样式-->
 <!--    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />-->
 <!--    <script src="https://ks3-cn-beijing.ksyun.com/vform3/render.umd.js?t=20220129"></script>-->
     <!--此处引入Jquery-->
-    <script src="https://cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+<!--    <script src="https://cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>-->
 
     <style>
         * {
@@ -191,6 +193,7 @@
   <tr>
     <th>任务名</th>
     <th>调用算法</th>
+    <th>执行用户</th>
     <th>开始时间</th>
     <th>执行状态</th>
     <th>执行结果</th>
@@ -202,6 +205,7 @@
   <tr>
     <td>{{ record.task_name }}</td>
     <td>{{ record.alg_name }}</td>
+    <td>{{ record.exec_er.username }}</td>
     <td>{{ record.exec_datetime }}</td>
     <td>{{ record.status }}</td>
     <td> {% if record.show_result %}

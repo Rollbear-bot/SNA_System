@@ -42,6 +42,8 @@ class RunResult(models.Model):
     alg_name = models.CharField(max_length=200)
     # 任务名
     task_name = models.CharField(max_length=200)
+    # 执行用户：链接到一个用户
+    exec_er = models.ForeignKey(User, on_delete=models.PROTECT)
 
     # 算法执行状态从tag文件中读取，不在数据库中保存
     # 执行结果不在数据库中保存

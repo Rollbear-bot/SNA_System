@@ -208,7 +208,8 @@ def run_alg(req):
 
     record_model = RunResult(exec_datetime=datetime.now() + timedelta(hours=8),
                              dataset_used=dataset,
-                             alg_name=alg_name, task_name=task_name)
+                             alg_name=alg_name, task_name=task_name,
+                             exec_er=req.user)
     record_model.save()
 
     # 开启子进程执行算法
