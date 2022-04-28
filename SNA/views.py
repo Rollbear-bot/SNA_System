@@ -149,7 +149,8 @@ def dataset_detail(req, dataset_id):
                   {"dataset": dataset,
                    "run_records": run_records,
                    "username": username,
-                   "access": "私有" if dataset.is_private else "公开"})
+                   "access": "私有" if dataset.is_private else "公开",
+                   "own": dataset.owner and dataset.owner.pk == req.user.pk})
 
 
 def dataset_upload(req):
@@ -175,6 +176,24 @@ def dataset_upload(req):
 
     return HttpResponseRedirect(
         reverse('SNA:index'))
+
+
+def dataset_alter(req):
+    """修改一个已有数据集的某些字段"""
+    if not req.user.is_authenticated:
+        return HttpResponseRedirect(reverse('SNA:login'))
+    dataset_id = req.POST.get("dataset_id")
+    dataset_model = get_object_or_404(Dataset, pk=dataset_id)
+
+    # 修改模型对象的"访问权限"字段
+    is_private = req.POST.get("access") == "私有"
+    dataset_model.is_private = is_private
+    # 提交到数据库
+    dataset_model.save()
+
+    # 使用重定向防止表单重复提交
+    return HttpResponseRedirect(
+        reverse('SNA:d_detail', args=(dataset_id, )))
 
 
 def run_alg(req):

@@ -13,5 +13,6 @@ urlpatterns = [
     path('run_alg/', views.run_alg, name='run_alg'),
     path('register/', views.Register.as_view(), name='register'),
     path('login/', views.Login.as_view(), name='login'),
-    path('show_result/', views.tiles_plot, name='show_result')
+    path('show_result/', views.tiles_plot, name='show_result'),
+    path('dataset_alter/', views.dataset_alter, name='d_alter'),
 ]

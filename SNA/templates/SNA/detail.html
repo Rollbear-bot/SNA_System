@@ -1,15 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
 
-{% csrf_token %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据集详情</title>
+    <script src="//unpkg.com/vue@next"></script>
+    <script src="//unpkg.com/element-plus"></script>
+<!--    导入样式-->
+<!--    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />-->
+<!--    <script src="https://ks3-cn-beijing.ksyun.com/vform3/render.umd.js?t=20220129"></script>-->
+    <!--此处引入Jquery-->
+    <script src="https://cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+    <style>
+        * {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /*body {*/
+        /*    height: 100vh;*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*    justify-content: center;*/
+        /*    background-color: #d3dafa;*/
+        /*}*/
+        .shell{
+            position:fixed;
+            width: 280px;
+            height: 650px;
+            background-color: #8a98c9;
+        }
+        .buttons{
+            margin: 60px 0;
+            color: #fff;
+            text-decoration: none;  // 取消超链接的下划线
+        }
+        .li{
+            letter-spacing: 2px;
+            font: 600 17px '';
+            padding: 16px 52px;
+            transition: .3s;
+        }
+        .li::after{
+            content: '';
+            position: absolute;
+            left: 20px;
+            margin-top: -22px;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background-color: #fff;
+            border-radius: 50%;
+        }
+        .buttons>li:hover{
+            background-color: #beb5df;
+        }
+
+        .li ul{
+            width: 0;
+            height: 530px;
+            padding: 60px 0;
+            position: absolute;
+            top: 0;
+            right: 0;
+            overflow: hidden;
+            background-color: #59699b;
+            transition: .3s;
+        }
+
+        .li ul li{
+            padding: 16px 24px;
+            transition: .3s;
+        }
+
+        .li:hover ul{
+            width: 228px;
+        }
+        .li ul li:hover{
+            background-color: #828eb9;
+        }
+    </style>
+</head>
+
+<body>
+<table>
+    <tr id="header">
+        <td style="height: auto"><h1>系统名</h1></td>
+    </tr>
+    <tr id="main">
+        <td id="side-bar" style="width:300px;height:auto;vertical-align:top;">
+            <nav class="shell">
+        <ul class="buttons">
+            <li class="li">
+                <a class="buttons" href="{% url 'SNA:index'%}">系统主页</a>
+            </li>
+
+            <li class="li">
+                数据集管理
+                <ul>
+                    <li>
+                        <a class="buttons" href="{% url 'SNA:index' %}">数据集列表</a>
+                    </li>
+                    <li>
+                        <a class="buttons" href="{% url 'SNA:index' %}">新建数据集</a>
+                    </li>
+
+                </ul>
+            </li>
+
+            <li class="li">
+                个人中心
+                <ul>
+                    <li>
+                        <a class="buttons" href="{% url 'SNA:login' %}">切换账号</a>
+                    </li>
+                    <li>
+                        <a class="buttons" href="{% url 'SNA:register' %}">新建账户</a>
+                    </li>
+
+                </ul>
+            </li>
+
+            <li class="li">
+                管理中心
+                <ul>
+                    <li>
+                        <a class="buttons" href="/admin/auth/user/">用户管理</a>
+                    </li>
+                    <li>
+                        <a class="buttons" href="/admin">数据管理</a>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+    </nav>
+        </td>
+        <td id="contain" style="width:1000px;vertical-align:top;">
+
 <fieldset>
     <legend><h1>{{ dataset.name }}</h1></legend>
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
         <label>数据文件：{{ dataset.path }}</label><br>
         <label>所有者：{{ username }}</label><br>
         <label>访问权限：{{ access }}</label>
-</fieldset>
-<input type="submit" value="null" hidden>
 
-<p><a href="{% url 'SNA:index' %}">返回主页</a></p>
+        {% if own %}
+        <br><label>变更访问权限：</label>
+        <form action="{% url 'SNA:d_alter' %}" method="post">
+            {% csrf_token %}
+            <select name="access">
+                <option>私有</option>
+                <option>公开</option>
+            </select>
+            <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
+            <input type="submit" value="确认">
+        </form>
+        {% endif %}
+
+<!--    ElementUI风格开关 -->
+<!--        <div id="app">-->
+<!--            <v-form-render @change="submitForm" :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef">-->
+<!--            </v-form-render>-->
+<!--            <el-button type="primary" @click="submitForm">更改</el-button>-->
+<!--        </div>-->
+
+</fieldset>
+
 
 <h2>选择分析任务</h2>
 {# 此表单用于提交算法执行任务 #}
@@ -59,3 +220,40 @@
 {% endif %}
 
 </table>
+        </td>
+    </tr>
+    <tr id="tail">
+        <td colspan="2">尾部信息</td>
+    </tr>
+
+</table>
+
+<script>
+  const { createApp } = Vue;
+	const app = createApp({
+      data() {
+        return {
+          formJson: {"widgetList":[{"key":74146,"type":"switch","icon":"switch-field","formItemFlag":true,"options":{"name":"access_switch","label":"","labelAlign":"","defaultValue":false,"columnWidth":"200px","labelWidth":null,"labelHidden":false,"disabled":false,"hidden":false,"customClass":[],"labelIconClass":null,"labelIconPosition":"rear","labelTooltip":null,"switchWidth":40,"activeText":"","inactiveText":"","activeColor":null,"inactiveColor":null,"onCreated":"","onMounted":"","onChange":"","onValidate":""},"id":"switch59867"}],"formConfig":{"modelName":"formData","refName":"vForm","rulesName":"rules","labelWidth":80,"labelPosition":"left","size":"","labelAlign":"label-left-align","cssCode":"","customClass":[],"functions":"","layoutType":"H5","jsonVersion":3,"onFormCreated":"","onFormMounted":"","onFormDataChange":""}},
+          formData: {},
+          optionData: {}
+        }
+      },
+      methods: {
+        submitForm: function() {
+          this.$refs.vFormRef.getFormData().then( function(formData) {
+            // Form Validation OK
+            alert( JSON.stringify(formData) )
+          }).catch( function(error) {
+            // Form Validation Failed
+            alert(error)
+          })
+        }
+      }
+	});
+	app.use(ElementPlus)
+	app.use(VFormRender)
+	app.mount("#app");
+</script>
+
+</body>
+</html>
