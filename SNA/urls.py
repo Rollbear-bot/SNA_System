@@ -15,4 +15,7 @@ urlpatterns = [
     path('login/', views.Login.as_view(), name='login'),
     path('show_result/', views.tiles_plot, name='show_result'),
     path('dataset_alter/', views.dataset_alter, name='d_alter'),
+    path('about', views.about_sys, name="about_sys"),
+    path('d_upload_single', views.dataset_upload_single, name='d_upload_single'),
+    path('d_lt', views.dataset_lt_single, name='d_lt_single'),
 ]

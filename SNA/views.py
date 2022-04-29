@@ -239,3 +239,16 @@ def tiles_plot(req):
     # 转发到可视化页面的模板
     return render(req, "SNA/tiles_plot.html",
                   {"data": data})
+
+
+def about_sys(req):
+    """关于系统"""
+    return render(req, "SNA/about.html")
+
+
+def dataset_lt_single(req):
+    return render(req, "SNA/dataset_lt.html")
+
+
+def dataset_upload_single(req):
+    return render(req, "SNA/dataset_upload.html")

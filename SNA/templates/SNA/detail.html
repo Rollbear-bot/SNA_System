@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 {% load static %}
-<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="utf-8" />
@@ -47,8 +46,6 @@
     </nav>
     <!-- Dropdown Structure 右上角下拉菜单 -->
     <ul id="dropdown1" class="dropdown-content">
-        <li><a href="#"><i class="fa fa-user fa-fw"></i>个人中心</a>
-        </li>
         <li><a href="{% url 'SNA:login' %}"><i class="fa fa-sign-out fa-fw"></i>退出登录</a>
         </li>
     </ul>
@@ -73,10 +70,10 @@
                     </a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="{% url 'SNA:index' %}">数据集列表</a>
+                            <a href="{% url 'SNA:d_lt_single' %}">数据集列表</a>
                         </li>
                         <li>
-                            <a href="#">上传数据集</a>
+                            <a href="{% url 'SNA:d_upload_single' %}">上传数据集</a>
                         </li>
                     </ul>
                 </li>
@@ -111,7 +108,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#" class="waves-effect waves-dark">
+                    <a href="{% url 'SNA:about_sys' %}" class="waves-effect waves-dark">
                         <i class="fa fa-qrcode"></i>
                         关于系统</a>
                 </li>
@@ -330,4 +327,3 @@
 
 
 </body>
-</html>
