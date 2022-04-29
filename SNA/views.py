@@ -142,14 +142,15 @@ def dataset_detail(req, dataset_id):
         record.status = s
         record.show_result = s == "已完成"
 
-    username = dataset.owner.username if dataset.owner else "未知"
+    owner = dataset.owner.username if dataset.owner else "未知"
 
     # 调用template更快捷的方法：使用render
     return render(req, "SNA/detail.html",
                   {"dataset": dataset,
                    "run_records": run_records,
-                   "username": username,
-                   "access": "私有" if dataset.is_private else "公开",
+                   "owner": owner,
+                   "cur_username": req.user.username,
+                   "access_str": "私有" if dataset.is_private else "公开",
                    "own": dataset.owner and dataset.owner.pk == req.user.pk})
 
 
@@ -186,7 +187,7 @@ def dataset_alter(req):
     dataset_model = get_object_or_404(Dataset, pk=dataset_id)
 
     # 修改模型对象的"访问权限"字段
-    is_private = req.POST.get("access") == "私有"
+    is_private = req.POST.get("access-switch") is None
     dataset_model.is_private = is_private
     # 提交到数据库
     dataset_model.save()

@@ -1,263 +1,333 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数据集详情</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNA</title>
 
-<!--    导入vue和element ui -->
-<!--    <script src="//unpkg.com/vue@next"></script>-->
-<!--    <script src="//unpkg.com/element-plus"></script>-->
-<!--    导入样式-->
-<!--    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />-->
-<!--    <script src="https://ks3-cn-beijing.ksyun.com/vform3/render.umd.js?t=20220129"></script>-->
-    <!--此处引入Jquery-->
-<!--    <script src="https://cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>-->
-
-    <style>
-        * {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        /*body {*/
-        /*    height: 100vh;*/
-        /*    display: flex;*/
-        /*    align-items: center;*/
-        /*    justify-content: center;*/
-        /*    background-color: #d3dafa;*/
-        /*}*/
-        .shell{
-            position:fixed;
-            width: 280px;
-            height: 650px;
-            background-color: #8a98c9;
-        }
-        .buttons{
-            margin: 60px 0;
-            color: #fff;
-            text-decoration: none;  // 取消超链接的下划线
-        }
-        .li{
-            letter-spacing: 2px;
-            font: 600 17px '';
-            padding: 16px 52px;
-            transition: .3s;
-        }
-        .li::after{
-            content: '';
-            position: absolute;
-            left: 20px;
-            margin-top: -22px;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background-color: #fff;
-            border-radius: 50%;
-        }
-        .buttons>li:hover{
-            background-color: #beb5df;
-        }
-
-        .li ul{
-            width: 0;
-            height: 530px;
-            padding: 60px 0;
-            position: absolute;
-            top: 0;
-            right: 0;
-            overflow: hidden;
-            background-color: #59699b;
-            transition: .3s;
-        }
-
-        .li ul li{
-            padding: 16px 24px;
-            transition: .3s;
-        }
-
-        .li:hover ul{
-            width: 228px;
-        }
-        .li ul li:hover{
-            background-color: #828eb9;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/materialize/css/materialize.min.css' %}" media="screen,projection" />
+    <!-- Bootstrap Styles-->
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="{% static 'assets/css/font-awesome.css' %}" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link href="{% static 'assets/js/morris/morris-0.4.3.min.css' %}" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="{% static 'assets/css/custom-styles.css' %}" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="{% static 'assets/js/Lightweight-Chart/cssCharts.css' %}">
 </head>
-
 <body>
-<table>
-    <tr id="header">
-        <td style="height: auto"><h1>系统名</h1></td>
-    </tr>
-    <tr id="main">
-        <td id="side-bar" style="width:300px;height:auto;vertical-align:top;">
-            <nav class="shell">
-        <ul class="buttons">
-            <li class="li">
-                <a class="buttons" href="{% url 'SNA:index'%}">系统主页</a>
-            </li>
+<div id="wrapper">
+    <nav class="navbar navbar-default top-navbar" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand waves-effect waves-dark" href="{% url 'SNA:index' %}"><i class="large material-icons">insert_chart</i>
+                <strong>SNA</strong></a>
 
-            <li class="li">
-                数据集管理
-                <ul>
-                    <li>
-                        <a class="buttons" href="{% url 'SNA:index' %}">数据集列表</a>
-                    </li>
-                    <li>
-                        <a class="buttons" href="{% url 'SNA:index' %}">新建数据集</a>
-                    </li>
+            <div id="sideNav" class="waves-effect waves-dark" href=""><i class="material-icons dp48">toc</i></div>
+        </div>
 
-                </ul>
-            </li>
-
-            <li class="li">
-                个人中心
-                <ul>
-                    <li>
-                        <a class="buttons" href="{% url 'SNA:login' %}">切换账号</a>
-                    </li>
-                    <li>
-                        <a class="buttons" href="{% url 'SNA:register' %}">新建账户</a>
-                    </li>
-
-                </ul>
-            </li>
-
-            <li class="li">
-                管理中心
-                <ul>
-                    <li>
-                        <a class="buttons" href="/admin/auth/user/">用户管理</a>
-                    </li>
-                    <li>
-                        <a class="buttons" href="/admin">数据管理</a>
-                    </li>
-                </ul>
-            </li>
-
+        <ul class="nav navbar-top-links navbar-right">
+            <li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1">
+                <i class="fa fa-user fa-fw"></i>
+                <b>{{ cur_username }}</b>
+                <i class="material-icons right">arrow_drop_down</i>
+            </a></li>
         </ul>
     </nav>
-        </td>
-        <td id="contain" style="width:1000px;vertical-align:top;">
+    <!-- Dropdown Structure 右上角下拉菜单 -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="#"><i class="fa fa-user fa-fw"></i>个人中心</a>
+        </li>
+        <li><a href="{% url 'SNA:login' %}"><i class="fa fa-sign-out fa-fw"></i>退出登录</a>
+        </li>
+    </ul>
 
-<fieldset>
-    <legend><h1>{{ dataset.name }}</h1></legend>
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-        <label>数据文件：{{ dataset.path }}</label><br>
-        <label>所有者：{{ username }}</label><br>
-        <label>访问权限：{{ access }}</label>
+    <!--/. NAV TOP  -->
+    <!--/. NAV TOP  -->
+<!--    侧边导航栏 -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <!--  此处class active-menu 调整导航栏哪个标签处于选中状态-->
+                    <a href="{% url 'SNA:index' %}" class="waves-effect waves-dark">
+                        <i class="fa fa-desktop"></i>
+                        系统主页</a>
+                </li>
+                <li>
+                    <a href="#" class="active-menu waves-effect waves-dark">
+                        <i class="fa fa-table"></i>
+                        数据集与任务
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:index' %}">数据集列表</a>
+                        </li>
+                        <li>
+                            <a href="#">上传数据集</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-user fa-fw"></i>
+                        个人中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:login' %}">切换账号</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'SNA:register' %}">新建账号</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-sitemap"></i>
+                        管理中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="/admin/auth/user/">用户管理</a>
+                        </li>
+                        <li>
+                            <a href="/admin">数据管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-qrcode"></i>
+                        关于系统</a>
+                </li>
 
-        {% if own %}
-        <br><label>变更访问权限：</label>
-        <form action="{% url 'SNA:d_alter' %}" method="post">
-            {% csrf_token %}
-            <select name="access">
-                <option>私有</option>
-                <option>公开</option>
-            </select>
-            <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
-            <input type="submit" value="确认">
-        </form>
-        {% endif %}
+            </ul>
 
-<!--    ElementUI风格开关 -->
-<!--        <div id="app">-->
-<!--            <v-form-render @change="submitForm" :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef">-->
-<!--            </v-form-render>-->
-<!--            <el-button type="primary" @click="submitForm">更改</el-button>-->
-<!--        </div>-->
+        </div>
+    </nav>
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper">
+<!--        页面标题 -->
+        <div class="header">
+            <h1 class="page-header">
+                数据集详情
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="{% url 'SNA:index' %}">数据集与任务</a></li>
+                <li class="active">数据集详情</li>
+            </ol>
 
-</fieldset>
+        </div>
+<!--        页面内容-->
+        <div id="page-inner">
+
+            <div class="row">
+                <div class="col-md-12">
+                     <div class="card">
+                         <div class="card-content">
+                             <span class="card-title">{{ dataset.name }}</span>
+                             <fieldset>
+                        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+                                 <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>数据文件</th>
+                                            <th>所有者</th>
+                                            <th>上传时间</th>
+                                            <th>访问权限</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ dataset.path }}</td>
+                                            <td>{{ owner }}</td>
+                                            <td>{{ dataset.pub_date }}</td>
+                                            <td>{{ access_str }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
 
-<h2>选择分析任务</h2>
-{# 此表单用于提交算法执行任务 #}
-<form action="{% url 'SNA:run_alg' %}" method="post">
-    {% csrf_token %}
-    <select name="task_select">
-        <option>社区演化分析</option>
-{#        <option>节点联系预测</option>#}
-    </select>
-    <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
-    <input type="submit" value="启动">
-</form>
+                        {% if own %}
+                            <div class="card-action">
+                                <br><p>变更访问权限：</p>
+                                <form action="{% url 'SNA:d_alter' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="switch">
+                                            <label>
+                                              <p>私有
+                                              <input type="checkbox" name="access-switch">
+                                              <span class="lever"></span>
+                                              公开</p>
+                                            </label>
+                                         </div>
+                                    <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
+                                    <button type="submit" class="waves-effect waves-light btn blue-grey">
+                                            确认
+                                    </button>
+                                </form>
+
+                            </div>
+                        {% endif %}
+
+                    </fieldset>
+                           <div class="clearBoth"><br/></div>
+
+						 </div>
+						 </div>
+                </div>
+            </div>
+            <!-- /. ROW  -->
+            <div class="row">
+<!--                COL -->
+                <div class="col-md-12">
+                    <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">社交网络分析任务</span>
+
+                        <ul class="collapsible" data-collapsible="accordion">
+                            <li>
+                                  <div class="collapsible-header">
+                                      <i class="material-icons">filter_drama</i>
+                                      社区演化分析
+                                  </div>
+                                  <div class="collapsible-body" style="display: block;">
+{#                                      下拉tag内部的内容 #}
+                                      <form action="{% url 'SNA:run_alg' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="text" value="社区演化分析" name="task_select" hidden>
+                                        <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
+                                        <div class="card-action">
+                                            <p>
+                                                  任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...
+                                            </p>
+                                            <button type="submit" class="waves-effect waves-light btn blue-grey">
+                                            <i class="material-icons left">play_arrow</i>
+                                                启动任务
+                                            </button>
+                                        </div>
+                                      </form>
+                                  </div>
+                            </li>
+                            <li>
+                              <div class="collapsible-header"><i class="material-icons">place</i>
+                                  链接预测</div>
+                              <div class="collapsible-body">
+                                  <div class="card-action">
+                                    <p>
+                                          任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...
+                                    </p>
+                                </div>
+                              </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <!-- /. ROW  -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">任务执行记录</span>
+                        <div class="table-responsive">
+                                <table class="table table-striped">
+<!--                                    表头 -->
+                                    <thead>
+                                        <tr>
+                                            <th>任务名</th>
+                                            <th>调用算法</th>
+                                            <th>执行用户</th>
+                                            <th>开始时间</th>
+                                            <th>执行状态</th>
+                                            <th>执行结果</th>
+                                        </tr>
+                                    </thead>
+<!--                                    数据部分 -->
+                                    <tbody>
+                                        {% if run_records %}
+                                            {% for record in run_records %}
+                                            <tr>
+                                                <td>{{ record.task_name }}</td>
+                                                <td>{{ record.alg_name }}</td>
+                                                <td>{{ record.exec_er.username }}</td>
+                                                <td>{{ record.exec_datetime }}</td>
+                                                <td>{{ record.status }}</td>
+                                                <td> {% if record.show_result %}
+                                                    <form action="{% url 'SNA:show_result' %}" method="post">
+                                                        {% csrf_token %}
+                                                        <input type="text" value="{{ record.pk }}" name="record_id" hidden>
+                                                        <button type="submit" class="waves-effect waves-light btn blue-grey">
+                                                            <i class="material-icons left">assessment</i>
+                                                                查看结果
+                                                        </button>
+                                                    </form>
+                                                    {% else %} ---
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% else %}
+                                            <tr>
+                                                <td>暂无记录</td>
+                                            </tr>
+                                            {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <footer><p>SNA System V2.0 2022. Junhong Wu All rights reserved.</p></footer>
+
+        </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<!-- /. WRAPPER  -->
+<!-- JS Scripts-->
+<!-- jQuery Js -->
+<script src="{% static 'assets/js/jquery-1.10.2.js' %}"></script>
+
+<!-- Bootstrap Js -->
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'assets/materialize/js/materialize.min.js' %}"></script>
+
+<!-- Metis Menu Js -->
+<script src="{% static 'assets/js/jquery.metisMenu.js' %}"></script>
+<!-- Morris Chart Js -->
+<script src="{% static 'assets/js/morris/raphael-2.1.0.min.js' %}"></script>
+<script src="{% static 'assets/js/morris/morris.js' %}"></script>
 
 
-<h2>任务执行记录</h2>
-<table border="1">
-{# 表头 #}
-  <tr>
-    <th>任务名</th>
-    <th>调用算法</th>
-    <th>执行用户</th>
-    <th>开始时间</th>
-    <th>执行状态</th>
-    <th>执行结果</th>
-  </tr>
+<script src="{% static 'assets/js/easypiechart.js' %}"></script>
+<script src="{% static 'assets/js/easypiechart-data.js' %}"></script>
 
-{# 行 #}
-{% if run_records %}
-    {% for record in run_records %}
-  <tr>
-    <td>{{ record.task_name }}</td>
-    <td>{{ record.alg_name }}</td>
-    <td>{{ record.exec_er.username }}</td>
-    <td>{{ record.exec_datetime }}</td>
-    <td>{{ record.status }}</td>
-    <td> {% if record.show_result %}
-        <form action="{% url 'SNA:show_result' %}" method="post">
-            {% csrf_token %}
-            <input type="text" value="{{ record.pk }}" name="record_id" hidden>
-            <input type="submit" value="查看结果">
-        </form>
-        {% else %} ---
-        {% endif %}
-    </td>
-  </tr>
-    {% endfor %}
-{% else %}
-    <td>暂无记录</td>
-{% endif %}
+<script src="{% static 'assets/js/Lightweight-Chart/jquery.chart.js' %}"></script>
 
-</table>
-        </td>
-    </tr>
-    <tr id="tail">
-        <td colspan="2">尾部信息</td>
-    </tr>
+<!-- Custom Js -->
+<script src="{% static 'assets/js/custom-scripts.js' %}"></script>
 
-</table>
-
-<script>
-  const { createApp } = Vue;
-	const app = createApp({
-      data() {
-        return {
-          formJson: {"widgetList":[{"key":74146,"type":"switch","icon":"switch-field","formItemFlag":true,"options":{"name":"access_switch","label":"","labelAlign":"","defaultValue":false,"columnWidth":"200px","labelWidth":null,"labelHidden":false,"disabled":false,"hidden":false,"customClass":[],"labelIconClass":null,"labelIconPosition":"rear","labelTooltip":null,"switchWidth":40,"activeText":"","inactiveText":"","activeColor":null,"inactiveColor":null,"onCreated":"","onMounted":"","onChange":"","onValidate":""},"id":"switch59867"}],"formConfig":{"modelName":"formData","refName":"vForm","rulesName":"rules","labelWidth":80,"labelPosition":"left","size":"","labelAlign":"label-left-align","cssCode":"","customClass":[],"functions":"","layoutType":"H5","jsonVersion":3,"onFormCreated":"","onFormMounted":"","onFormDataChange":""}},
-          formData: {},
-          optionData: {}
-        }
-      },
-      methods: {
-        submitForm: function() {
-          this.$refs.vFormRef.getFormData().then( function(formData) {
-            // Form Validation OK
-            alert( JSON.stringify(formData) )
-          }).catch( function(error) {
-            // Form Validation Failed
-            alert(error)
-          })
-        }
-      }
-	});
-	app.use(ElementPlus)
-	app.use(VFormRender)
-	app.mount("#app");
-</script>
 
 </body>
 </html>
