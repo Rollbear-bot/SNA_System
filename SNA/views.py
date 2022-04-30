@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from multiprocessing import Process
 from SNA.algorithms.run_tiles import run_tiles
 from SNA.algorithms.tiles_parser import get_network_meta
+from SNA.utils import get_file_size
 
 # Create your views here.
 # view要么返回HttpResponse，要么返回HttpException
@@ -22,6 +23,13 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 
 BASE_DIR = "SNA/dataset_store/"
+SYS_META = {
+    "SYS_VERSION": "v2.0.220430",
+    "SYS_AUTHOR": "Junhong Wu",
+    "SYS_YEAR": "2022",
+    "SYS_NAME": "SNA System",
+    "SYS_ZH_NAME": "社交网络动态社区发现与分析系统",
+}
 
 
 # 注册
@@ -106,7 +114,8 @@ def index(req):
     # mapping template variable names to Python objects.
     context = {
         "dataset_lt": lasted_pub_lt,
-        "username": req.user.username
+        "cur_username": req.user.username,
+        "sys_meta": SYS_META,
     }
     return HttpResponse(
         template.render(context, req))
@@ -126,6 +135,12 @@ def dataset_detail(req, dataset_id):
         raise Http404("Dataset does not exist.")
     except RunResult.DoesNotExist:
         run_records = []
+
+    try:
+        d_size_str = get_file_size(f"./SNA/dataset_store/{dataset.pk}.{dataset.path.split('.')[-1]}")
+    except Exception as e:
+        print(e)
+        d_size_str = "未知"
 
     # 获取算法运行状态
     for record in run_records:
@@ -147,11 +162,13 @@ def dataset_detail(req, dataset_id):
     # 调用template更快捷的方法：使用render
     return render(req, "SNA/detail.html",
                   {"dataset": dataset,
+                   "d_size_str": d_size_str,
                    "run_records": run_records,
                    "owner": owner,
                    "cur_username": req.user.username,
                    "access_str": "私有" if dataset.is_private else "公开",
-                   "own": dataset.owner and dataset.owner.pk == req.user.pk})
+                   "own": dataset.owner and dataset.owner.pk == req.user.pk,
+                   "sys_meta": SYS_META})
 
 
 def dataset_upload(req):
@@ -243,7 +260,10 @@ def tiles_plot(req):
 
 def about_sys(req):
     """关于系统"""
-    return render(req, "SNA/about.html")
+    return render(req, "SNA/about.html", {
+        "cur_username": req.user.username,
+        "sys_meta": SYS_META,
+    })
 
 
 def dataset_lt_single(req):

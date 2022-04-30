@@ -145,6 +145,7 @@
                                     <thead>
                                         <tr>
                                             <th>数据文件</th>
+                                            <th>文件大小</th>
                                             <th>所有者</th>
                                             <th>上传时间</th>
                                             <th>访问权限</th>
@@ -153,6 +154,7 @@
                                     <tbody>
                                         <tr>
                                             <td>{{ dataset.path }}</td>
+                                            <td>{{ d_size_str }}</td>
                                             <td>{{ owner }}</td>
                                             <td>{{ dataset.pub_date }}</td>
                                             <td>{{ access_str }}</td>
@@ -198,11 +200,15 @@
                     <div class="card-content">
                         <span class="card-title">社交网络分析任务</span>
 
+                        <div class="alert alert-warning">
+                            <strong>注意！</strong> 启动任务前，请先确认当前数据集满足所选任务和算法的输入格式.
+                        </div>
+
                         <ul class="collapsible" data-collapsible="accordion">
                             <li>
                                   <div class="collapsible-header">
                                       <i class="material-icons">toll</i>
-                                      社区演化分析
+                                      社区演化分析（动态社区发现）
                                   </div>
                                   <div class="collapsible-body" style="display: block;">
 {#                                      下拉tag内部的内容 #}
@@ -210,15 +216,78 @@
                                         {% csrf_token %}
                                         <input type="text" value="社区演化分析" name="task_select" hidden>
                                         <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
-                                        <div class="card-action">
+                                        <div class="card-content">
                                             <p>
-                                                  任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...
+                                                动态社区发现即在动态图中识别内部联系紧密的子图。由于动态社区是一种子图，
+                                                因此其存储结构与动态图相同，分为离散存储和连续存储。
+                                                系统采用TILES算法执行动态社区发现任务，该算法接受连续存储的动态图，
+                                                处理时序存储的链接流，连续存储的动态图及其社区如下图所示。
                                             </p>
+{#                                            插图：连续型的动态社区发现 #}
+                                            <div class="card-image waves-effect waves-block waves-light">
+                                              <img class="activator"
+                                                   src="{% static 'images/alg/dynamic_comm.png' %}">
+                                            </div>
+                                            <p>
+                                                演化事件识别本质上是前者的子任务，即对于一个动态社区，
+                                                识别其形态发生较大变化的时间点。
+                                                事件有不同的类别，但目前学术界仍未形成统一的定义，常见的事件有社区新生、合并、分裂、衰亡等，
+                                                如下图所示。
+                                            </p>
+                                            <div class="card-image waves-effect waves-block waves-light">
+                                              <img class="activator"
+                                                   src="{% static 'images/alg/comm_events.png' %}">
+                                            </div>
+
+                                            <p>
+                                                数据格式说明：
+                                                数据格式：<br>
+                                                    - 文本文件，每行一条记录，具有三个字段，字段间用`\t`分隔<br>
+                                                    - 字段：源节点id，目标节点id，unix时间戳（有负数）<br>
+                                                数据示例：
+                                            </p>
+                                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>源节点ID</th>
+                                            <th>目标节点ID</th>
+                                            <th>Unix时间戳</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>2</td>
+                                            <td>314179414.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>513577419.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>...</td>
+                                            <td>...</td>
+                                            <td>...</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                                            <br>
+                                        </div>
+                                          <div class="card-action">
+                                              <div class="alert alert-info">
+                                                点击下方按钮以在当前数据集上启动该任务.
+                                            </div>
+
                                             <button type="submit" class="waves-effect waves-light btn blue-grey">
                                             <i class="material-icons left">play_arrow</i>
                                                 启动任务
                                             </button>
-                                        </div>
+                                          </div>
                                       </form>
                                   </div>
                             </li>
@@ -226,9 +295,12 @@
                               <div class="collapsible-header"><i class="material-icons">settings_ethernet</i>
                                   链接预测</div>
                               <div class="collapsible-body">
-                                  <div class="card-action">
+                                  <div class="card-content">
                                     <p>
-                                          任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...任务介绍...
+                                        给定静态图G={V,E}，其中E={(v_i,v_j ),…}表示图的拓扑结构，
+                                        算法学习图上的特征并预测给定节点对(v_i,v_j )之间的连接概率p_ij。对于动态图上的链接预测，
+                                        以离散存储的动态图为例，给定离散动态图G={G^0,G^1,…,G^T}，算法学习前序时间片中的图特征，
+                                        预测下一时间片G^(T+1)={V^(T+1),E^(T+1) }上的各节点对E^(T+1)={(v_i,v_j ),…}的连接概率{p_ij,…}。
                                     </p>
                                 </div>
                               </div>
@@ -293,7 +365,7 @@
                 </div>
                 </div>
             </div>
-            <footer><p>SNA System V2.0 2022. Junhong Wu All rights reserved.</p></footer>
+            <footer><p>{{ sys_meta.SYS_NAME }} {{ sys_meta.SYS_VERSION }} {{ sys_meta.SYS_YEAR }}. {{ sys_meta.SYS_AUTHOR }} All rights reserved.</p></footer>
 
         </div>
         <!-- /. PAGE INNER  -->
