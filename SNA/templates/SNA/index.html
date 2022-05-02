@@ -149,7 +149,8 @@
                          <div class="card-content">
                              <span class="card-title">现有数据集</span>
                                 <p>
-                                    系统中的数据集分为公开数据集和私有数据集，所有您上传的数据集和其他用户上传并公开的数据集会展示在此；您可以在所有可见的数据集上提交社交网络分析任务.
+                                    系统中的数据集分为公开数据集和私有数据集，所有您上传的数据集和其他用户上传并公开的数据集会展示在此.<br>
+                                    您可以在所有可见的数据集上提交社交网络分析任务.
                                 </p>
                                 <br>
                                 {% if dataset_lt %}
@@ -201,12 +202,52 @@
                      <div class="card">
                          <div class="card-content">
                              <span class="card-title">新建数据集</span>
+                             <p>
+                                 您可以根据自己的需要命名数据集，并设置其访问权限.<br>
+                                 对于公开数据集，所有人都能查看和提交其上的任务.<br>
+                                 对于私有数据集，仅有创建者可见，并且仅有创建者能够查看和提交任务.
+                             </p><br>
+                             <div class="alert alert-warning">
+                                <strong>注意！</strong> 上传数据集前，请先了解您的目标任务要求的数据格式.
+                             </div>
+
                              <form action="{% url 'SNA:d_upload' %}" method="post" enctype="multipart/form-data">
-                                <input type="file" name="filename">
-                                <input type ="text" name ="dataset_name">
-                                <input type="checkbox" name="is_private" checked=True>私有
-                                <input type="submit">
-                                {% csrf_token %}
+
+                                 <div class="card-action">
+                                     <p>数据集名称：</p>
+                                        <input type ="text" name ="dataset_name">
+
+                                     <p>
+                                         数据文件：
+                                     </p>
+                                         <div class="file-field input-field">
+                                          <div class="btn teal white-text">
+                                              <i class="material-icons dp48">description</i>
+                                            <input type="file" name="filename" multiple="">
+                                          </div>
+
+                                          <div class="file-path-wrapper">
+                                            <input class="file-path validate valid" type="text" placeholder="选择一个数据文件">
+                                          </div>
+                                        </div>
+                                     <p>
+                                         访问权限：
+                                     </p>
+
+                                     <div class="switch">
+                                        <label>
+                                          <p>私有
+                                          <input type="checkbox" name="is_private">
+                                          <span class="lever"></span>
+                                          公开</p>
+                                        </label>
+                                    </div>
+                                     <br>
+
+                                     <button type="submit" class="teal waves-effect waves-light btn white-text">
+                                         提交</button>
+                                    {% csrf_token %}
+                                     </div>
                             </form>
 
 						 </div>
