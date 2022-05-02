@@ -162,28 +162,30 @@
                                     </tbody>
                                 </table>
 
-
-                        {% if own %}
-                            <div class="card-action">
-                                <br><p>变更访问权限：</p>
-                                <form action="{% url 'SNA:d_alter' %}" method="post">
-                                    {% csrf_token %}
-                                    <div class="switch">
-                                            <label>
-                                              <p>私有
-                                              <input type="checkbox" name="access-switch">
-                                              <span class="lever"></span>
-                                              公开</p>
-                                            </label>
-                                         </div>
-                                    <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
-                                    <button type="submit" class="waves-effect waves-light btn blue-grey">
-                                            确认
-                                    </button>
-                                </form>
-
-                            </div>
-                        {% endif %}
+{#                            <div class="card-content">#}
+                                {% if own %}
+                                    <br><p>变更访问权限：</p>
+                                    <form action="{% url 'SNA:d_alter' %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="switch">
+                                                <label>
+                                                  <p>私有
+                                                  <input type="checkbox" name="access-switch">
+                                                  <span class="lever"></span>
+                                                  公开</p>
+                                                </label>
+                                             </div>
+                                        <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
+                                        <button type="submit" class="waves-effect waves-light btn blue-grey">
+                                                确认
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <div class="alert alert-danger">
+                                        您不是该数据集的所有者，因此您<strong>不能修改该数据集</strong>，但您可以在该数据集上查看和提交新的任务.
+                                    </div>
+                                {% endif %}
+{#                            </div>#}
 
                     </fieldset>
                            <div class="clearBoth"><br/></div>
@@ -217,11 +219,11 @@
                                         <input type="text" value="社区演化分析" name="task_select" hidden>
                                         <input type="text" value="{{ dataset.id }}" name="dataset_id" hidden>
                                         <div class="card-content">
+                                            <div class="card-title">
+                                                任务简介
+                                            </div>
                                             <p>
-                                                动态社区发现即在动态图中识别内部联系紧密的子图。由于动态社区是一种子图，
-                                                因此其存储结构与动态图相同，分为离散存储和连续存储。
-                                                系统采用TILES算法执行动态社区发现任务，该算法接受连续存储的动态图，
-                                                处理时序存储的链接流，连续存储的动态图及其社区如下图所示。
+                                                动态社区发现即在动态图中识别内部联系紧密的子图。由于动态社区是一种子图，因此其存储结构与动态图相同，分为离散存储和连续存储。系统采用TILES算法执行动态社区发现任务，该算法接受连续存储的动态图，处理时序存储的链接流，连续存储的动态图及其社区如下图所示。
                                             </p>
 {#                                            插图：连续型的动态社区发现 #}
                                             <div class="card-image waves-effect waves-block waves-light">
@@ -229,52 +231,52 @@
                                                    src="{% static 'images/alg/dynamic_comm.png' %}">
                                             </div>
                                             <p>
-                                                演化事件识别本质上是前者的子任务，即对于一个动态社区，
-                                                识别其形态发生较大变化的时间点。
-                                                事件有不同的类别，但目前学术界仍未形成统一的定义，常见的事件有社区新生、合并、分裂、衰亡等，
-                                                如下图所示。
+                                                演化事件识别本质上是前者的子任务，即对于一个动态社区，识别其形态发生较大变化的时间点。事件有不同的类别，但目前学术界仍未形成统一的定义，常见的事件有社区新生、合并、分裂、衰亡等，如下图所示。
                                             </p>
                                             <div class="card-image waves-effect waves-block waves-light">
                                               <img class="activator"
                                                    src="{% static 'images/alg/comm_events.png' %}">
                                             </div>
 
+                                            <br><div class="card-title">
+                                                数据格式说明
+                                            </div>
                                             <p>
-                                                数据格式说明：
                                                 数据格式：<br>
                                                     - 文本文件，每行一条记录，具有三个字段，字段间用`\t`分隔<br>
-                                                    - 字段：源节点id，目标节点id，unix时间戳（有负数）<br>
-                                                数据示例：
+                                                    - 字段：源节点id，目标节点id，unix时间戳（可以有负数）<br>
+                                                    - 链接记录（每行）需要按时间戳从小到大排序<br>
+                                                数据示例如下
                                             </p>
                                             <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>源节点ID</th>
-                                            <th>目标节点ID</th>
-                                            <th>Unix时间戳</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>2</td>
-                                            <td>314179414.0</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>3</td>
-                                            <td>513577419.0</td>
-                                        </tr>
-                                        <tr>
-                                            <td>...</td>
-                                            <td>...</td>
-                                            <td>...</td>
-                                        </tr>
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>源节点ID</th>
+                                                            <th>目标节点ID</th>
+                                                            <th>Unix时间戳</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td>2</td>
+                                                            <td>314179414.0</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>2</td>
+                                                            <td>3</td>
+                                                            <td>513577419.0</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>...</td>
+                                                            <td>...</td>
+                                                            <td>...</td>
+                                                        </tr>
 
-                                    </tbody>
-                                </table>
-                            </div>
+                                                    </tbody>
+                                                </table>
+                                            </div>
 
                                             <br>
                                         </div>
@@ -296,11 +298,11 @@
                                   链接预测</div>
                               <div class="collapsible-body">
                                   <div class="card-content">
+                                      <div class="card-title">
+                                          任务简介
+                                      </div>
                                     <p>
-                                        给定静态图G={V,E}，其中E={(v_i,v_j ),…}表示图的拓扑结构，
-                                        算法学习图上的特征并预测给定节点对(v_i,v_j )之间的连接概率p_ij。对于动态图上的链接预测，
-                                        以离散存储的动态图为例，给定离散动态图G={G^0,G^1,…,G^T}，算法学习前序时间片中的图特征，
-                                        预测下一时间片G^(T+1)={V^(T+1),E^(T+1) }上的各节点对E^(T+1)={(v_i,v_j ),…}的连接概率{p_ij,…}。
+                                        给定静态图G={V,E}，其中E={(v_i,v_j ),…}表示图的拓扑结构，算法学习图上的特征并预测给定节点对(v_i,v_j )之间的连接概率p_ij。对于动态图上的链接预测，以离散存储的动态图为例，给定离散动态图G={G^0,G^1,…,G^T}，算法学习前序时间片中的图特征，预测下一时间片G^(T+1)={V^(T+1),E^(T+1) }上的各节点对E^(T+1)={(v_i,v_j ),…}的连接概率{p_ij,…}。
                                     </p>
                                 </div>
                               </div>
