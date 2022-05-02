@@ -123,27 +123,72 @@
         <div class="header">
             <h1 class="page-header">
                 {{ sys_meta.SYS_ZH_NAME }}<small>（{{ sys_meta.SYS_VERSION }}）</small><br>
-                <small>欢迎，{{ cur_username }}</small>
             </h1>
         </div>
 <!--        页面内容-->
         <div id="page-inner">
             <div class="row">
                 <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-title">欢迎👏，{{ cur_username }}</div>
+                            <p>
+                                上次登陆于 {{ user_info.last_login }}<br>
+                                您共上传了 {{ user_info.num_own_dataset }} 个数据集<br>
+                                您共执行了 {{ user_info.num_run_record }} 次任务
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
                      <div class="card">
                          <div class="card-content">
                              <span class="card-title">现有数据集</span>
+                                <p>
+                                    系统中的数据集分为公开数据集和私有数据集，所有您上传的数据集和其他用户上传并公开的数据集会展示在此；您可以在所有可见的数据集上提交社交网络分析任务.
+                                </p>
+                                <br>
                                 {% if dataset_lt %}
-                                    <ul>
-                                {#    从调用该template的view中取得context，填充到此#}
-                                    {% for dataset in dataset_lt %}
-                                {#        使用template tag "url" 来将url于此处解耦，传入url.py中定义路径的name#}
-                                        <li><a href="{% url 'SNA:d_detail' dataset.id %}">{{ dataset.name }}</a></li>
-                                {#        替代此语句：<li><a href="/SNA/{{ dataset.id }}/">{{ dataset.name }}</a></li>#}
-                                    {% endfor %}
+                                    <ul class="collapsible" data-collapsible="accordion">
+                                        {% for dataset in dataset_lt %}
+                                        <li>
+                                              <div class="collapsible-header">
+                                                  <i class="material-icons">description</i>
+                                                  {{ dataset.name }}
+                                              </div>
+                                              <div class="collapsible-body" style="display: block;">
+                                                    <div class="card-content">
+                                                        {% if dataset.is_private %}
+                                                            <div class="alert alert-info">
+                                                                    <strong>这是一个私有数据集，</strong> 仅有您可以查看并提交该数据集上的任务.
+                                                                </div>
+                                                          {% else %}
+                                                            <div class="alert alert-success">
+                                                                <strong>这是一个公开数据集！</strong> 所有人都可以在该数据集上提交新任务，并查看所有现存的任务.
+                                                            </div>
+                                                          {% endif %}
+                                                        <p>本数据集由 {{ dataset.owner.username }} 上传于 {{ dataset.pub_date }}</p>
+                                                    </div>
+                                                      <div class="card-action">
+                                                          <form action="{% url 'SNA:d_detail' dataset.id %}" method="get">
+                                                              <button type="submit" class="waves-effect waves-light btn blue-grey">
+                                                                <i class="material-icons left">pageview</i>
+                                                                    <a class="white-text" href="{% url 'SNA:d_detail' dataset.id %}">查看详情</a>
+                                                                </button>
+                                                          </form>
+                                                      </div>
+                                              </div>
+                                        </li>
+                                        {% endfor %}
                                     </ul>
+
+
                                 {% else %}
-                                    <p>No Dataset are available.</p>
+                                    <p>没有可用的数据集</p>
                                 {% endif %}
                            <div class="clearBoth"><br/></div>
 

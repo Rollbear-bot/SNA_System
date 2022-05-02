@@ -110,11 +110,20 @@ def index(req):
                      or (e.owner and e.owner.pk == req.user.pk)]
 
     template = loader.get_template("SNA/index.html")
+
+    # 首页显示当前用户的一些信息
+    user_info = {
+        "last_login": req.user.last_login + timedelta(hours=8),
+        "num_own_dataset": len(Dataset.objects.filter(owner=req.user)),
+        "num_run_record": len(RunResult.objects.filter(exec_er=req.user)),
+    }
+
     # 关联HTML的内容, the context is a dictionary
     # mapping template variable names to Python objects.
     context = {
         "dataset_lt": lasted_pub_lt,
         "cur_username": req.user.username,
+        "user_info": user_info,
         "sys_meta": SYS_META,
     }
     return HttpResponse(
