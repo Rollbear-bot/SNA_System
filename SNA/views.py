@@ -24,7 +24,7 @@ from django.contrib import messages
 
 BASE_DIR = "SNA/dataset_store/"
 SYS_META = {
-    "SYS_VERSION": "v2.2.220503",
+    "SYS_VERSION": "v2.3.220503",
     "SYS_AUTHOR": "Junhong Wu",
     "SYS_YEAR": "2022",
     "SYS_NAME": "SNA System",
