@@ -1,10 +1,281 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNA</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/materialize/css/materialize.min.css' %}" media="screen,projection" />
+    <!-- Bootstrap Styles-->
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="{% static 'assets/css/font-awesome.css' %}" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link href="{% static 'assets/js/morris/morris-0.4.3.min.css' %}" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="{% static 'assets/css/custom-styles.css' %}" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="{% static 'assets/js/Lightweight-Chart/cssCharts.css' %}">
 </head>
 <body>
+<div id="wrapper">
+    <nav class="navbar navbar-default top-navbar" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand waves-effect waves-dark" href="{% url 'SNA:index' %}"><i class="large material-icons">insert_chart</i>
+                <strong>SNA</strong></a>
+
+            <div id="sideNav" class="waves-effect waves-dark" href=""><i class="material-icons dp48">toc</i></div>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+            <li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1">
+                <i class="fa fa-user fa-fw"></i>
+                <b>{{ cur_username }}</b>
+                <i class="material-icons right">arrow_drop_down</i>
+            </a></li>
+        </ul>
+    </nav>
+    <!-- Dropdown Structure 右上角下拉菜单 -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="{% url 'SNA:login' %}"><i class="fa fa-sign-out fa-fw"></i>退出登录</a>
+        </li>
+    </ul>
+
+    <!--/. NAV TOP  -->
+    <!--/. NAV TOP  -->
+<!--    侧边导航栏 -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <!--  此处class active-menu 调整导航栏哪个标签处于选中状态-->
+                    <a href="{% url 'SNA:index' %}" class="waves-effect waves-dark">
+                        <i class="fa fa-desktop"></i>
+                        系统主页</a>
+                </li>
+                <li>
+                    <a href="#" class="active-menu waves-effect waves-dark">
+                        <i class="fa fa-table"></i>
+                        数据集与任务
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:d_lt_single' %}">数据集列表</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'SNA:d_upload_single' %}">上传数据集</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-user fa-fw"></i>
+                        个人中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:login' %}">切换账号</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'SNA:register' %}">新建账号</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-sitemap"></i>
+                        管理中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="/admin/auth/user/">用户管理</a>
+                        </li>
+                        <li>
+                            <a href="/admin">数据管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'SNA:about_sys' %}" class="waves-effect waves-dark">
+                        <i class="fa fa-qrcode"></i>
+                        关于系统</a>
+                </li>
+
+            </ul>
+
+        </div>
+    </nav>
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper">
+<!--        页面标题 -->
+        <div class="header">
+            <h1 class="page-header">
+                数据集列表
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="{% url 'SNA:index' %}">数据集与任务</a></li>
+                <li class="active">数据集列表</li>
+            </ol>
+
+        </div>
+<!--        页面内容-->
+        <div id="page-inner">
+
+             <div class="row">
+                <div class="col-md-12">
+                     <div class="card">
+                         <div class="card-content">
+                             <span class="card-title">您创建的数据集</span>
+                             <p>
+                                 您可以选择将自己上传的数据集设置为私有或者公开.<br>
+                                 无论何种访问权限，您都能使用该数据集查看和提交社交网络分析任务.
+                             </p><br>
+
+                              {% if own_lt %}
+                                    <ul class="collapsible" data-collapsible="accordion">
+                                        {% for dataset in own_lt %}
+                                        <li>
+                                              <div class="collapsible-header">
+                                                  <i class="material-icons">description</i>
+                                                  {{ dataset.name }}
+                                              </div>
+                                              <div class="collapsible-body" style="display: block;">
+                                                    <div class="card-content">
+                                                        {% if dataset.is_private %}
+                                                            <div class="alert alert-info">
+                                                                    <strong>这是一个私有数据集，</strong> 仅有您可以查看并提交该数据集上的任务.
+                                                                </div>
+                                                          {% else %}
+                                                            <div class="alert alert-success">
+                                                                <strong>这是一个公开数据集！</strong> 所有人都可以在该数据集上提交新任务，并查看所有现存的任务.
+                                                            </div>
+                                                          {% endif %}
+                                                        <p>本数据集由 {{ dataset.owner.username }} 上传于 {{ dataset.pub_date }}</p>
+                                                    </div>
+                                                      <div class="card-action">
+                                                          <form action="{% url 'SNA:d_detail' dataset.id %}" method="get">
+                                                              <button type="submit" class="waves-effect waves-light btn blue-grey">
+                                                                <i class="material-icons left">pageview</i>
+                                                                    <a class="white-text" href="{% url 'SNA:d_detail' dataset.id %}">查看详情</a>
+                                                                </button>
+                                                          </form>
+                                                      </div>
+                                              </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+
+
+                                {% else %}
+                                    <div class="alert alert-danger">
+                                        没有可用的数据集，您可以<strong><a class="blue-grey-text" href="{% url 'SNA:d_upload_single' %}">创建一个数据集</a></strong>.
+								    </div>
+                                {% endif %}
+
+						 </div>
+						 </div>
+                </div>
+            </div>
+             <div class="row">
+                <div class="col-md-12">
+                     <div class="card">
+                         <div class="card-content">
+                             <span class="card-title">公开数据集</span>
+                             <p>
+                                 公开数据集上，所有人都能查看和提交新任务，只有所有者能够修改其访问权限.<br>
+                                 所有者有权在任何时候将公开数据集转为私有.
+                             </p><br>
+
+                             {% if pub_lt %}
+                                    <ul class="collapsible" data-collapsible="accordion">
+                                        {% for dataset in pub_lt %}
+                                        <li>
+                                              <div class="collapsible-header">
+                                                  <i class="material-icons">description</i>
+                                                  {{ dataset.name }}
+                                              </div>
+                                              <div class="collapsible-body" style="display: block;">
+                                                    <div class="card-content">
+                                                        {% if dataset.is_private %}
+                                                            <div class="alert alert-info">
+                                                                    <strong>这是一个私有数据集，</strong> 仅有您可以查看并提交该数据集上的任务.
+                                                                </div>
+                                                          {% else %}
+                                                            <div class="alert alert-success">
+                                                                <strong>这是一个公开数据集！</strong> 所有人都可以在该数据集上提交新任务，并查看所有现存的任务.
+                                                            </div>
+                                                          {% endif %}
+                                                        <p>本数据集由 {{ dataset.owner.username }} 上传于 {{ dataset.pub_date }}</p>
+                                                    </div>
+                                                      <div class="card-action">
+                                                          <form action="{% url 'SNA:d_detail' dataset.id %}" method="get">
+                                                              <button type="submit" class="waves-effect waves-light btn blue-grey">
+                                                                <i class="material-icons left">pageview</i>
+                                                                    <a class="white-text" href="{% url 'SNA:d_detail' dataset.id %}">查看详情</a>
+                                                                </button>
+                                                          </form>
+                                                      </div>
+                                              </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+
+
+                                {% else %}
+                                    <div class="alert alert-danger">
+                                        没有可用的数据集，您可以<strong><a class="blue-grey-text" href="{% url 'SNA:d_upload_single' %}">创建一个数据集</a></strong>.
+								    </div>
+                                {% endif %}
+
+						 </div>
+						 </div>
+                </div>
+            </div>
+
+
+            <footer><p>{{ sys_meta.SYS_NAME }} {{ sys_meta.SYS_VERSION }} {{ sys_meta.SYS_YEAR }}. {{ sys_meta.SYS_AUTHOR }} All rights reserved.</p></footer>
+
+        </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<!-- /. WRAPPER  -->
+<!-- JS Scripts-->
+<!-- jQuery Js -->
+<script src="{% static 'assets/js/jquery-1.10.2.js' %}"></script>
+
+<!-- Bootstrap Js -->
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'assets/materialize/js/materialize.min.js' %}"></script>
+
+<!-- Metis Menu Js -->
+<script src="{% static 'assets/js/jquery.metisMenu.js' %}"></script>
+<!-- Morris Chart Js -->
+<script src="{% static 'assets/js/morris/raphael-2.1.0.min.js' %}"></script>
+<script src="{% static 'assets/js/morris/morris.js' %}"></script>
+
+
+<script src="{% static 'assets/js/easypiechart.js' %}"></script>
+<script src="{% static 'assets/js/easypiechart-data.js' %}"></script>
+
+<script src="{% static 'assets/js/Lightweight-Chart/jquery.chart.js' %}"></script>
+
+<!-- Custom Js -->
+<script src="{% static 'assets/js/custom-scripts.js' %}"></script>
+
 
 </body>
-</html>

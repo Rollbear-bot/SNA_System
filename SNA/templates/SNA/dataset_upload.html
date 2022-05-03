@@ -1,10 +1,243 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNA</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/materialize/css/materialize.min.css' %}" media="screen,projection" />
+    <!-- Bootstrap Styles-->
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="{% static 'assets/css/font-awesome.css' %}" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link href="{% static 'assets/js/morris/morris-0.4.3.min.css' %}" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="{% static 'assets/css/custom-styles.css' %}" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="{% static 'assets/js/Lightweight-Chart/cssCharts.css' %}">
 </head>
 <body>
+<div id="wrapper">
+    <nav class="navbar navbar-default top-navbar" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand waves-effect waves-dark" href="{% url 'SNA:index' %}"><i class="large material-icons">insert_chart</i>
+                <strong>SNA</strong></a>
+
+            <div id="sideNav" class="waves-effect waves-dark" href=""><i class="material-icons dp48">toc</i></div>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+            <li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1">
+                <i class="fa fa-user fa-fw"></i>
+                <b>{{ cur_username }}</b>
+                <i class="material-icons right">arrow_drop_down</i>
+            </a></li>
+        </ul>
+    </nav>
+    <!-- Dropdown Structure 右上角下拉菜单 -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="{% url 'SNA:login' %}"><i class="fa fa-sign-out fa-fw"></i>退出登录</a>
+        </li>
+    </ul>
+
+    <!--/. NAV TOP  -->
+    <!--/. NAV TOP  -->
+<!--    侧边导航栏 -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <!--  此处class active-menu 调整导航栏哪个标签处于选中状态-->
+                    <a href="{% url 'SNA:index' %}" class="waves-effect waves-dark">
+                        <i class="fa fa-desktop"></i>
+                        系统主页</a>
+                </li>
+                <li>
+                    <a href="#" class="active-menu waves-effect waves-dark">
+                        <i class="fa fa-table"></i>
+                        数据集与任务
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:d_lt_single' %}">数据集列表</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'SNA:d_upload_single' %}">上传数据集</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-user fa-fw"></i>
+                        个人中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:login' %}">切换账号</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'SNA:register' %}">新建账号</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-sitemap"></i>
+                        管理中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="/admin/auth/user/">用户管理</a>
+                        </li>
+                        <li>
+                            <a href="/admin">数据管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'SNA:about_sys' %}" class="waves-effect waves-dark">
+                        <i class="fa fa-qrcode"></i>
+                        关于系统</a>
+                </li>
+
+            </ul>
+
+        </div>
+    </nav>
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper">
+<!--        页面标题 -->
+        <div class="header">
+            <h1 class="page-header">
+                上传数据集
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="{% url 'SNA:index' %}">数据集与任务</a></li>
+                <li class="active">上传数据集</li>
+            </ol>
+
+        </div>
+<!--        页面内容-->
+        <div id="page-inner">
+
+            <div class="row">
+                <div class="col-md-12">
+                     <div class="card">
+                         <div class="card-content">
+                             <span class="card-title">简介</span>
+                             <p>
+                                 一个数据集对应一个数据文件，创建者可以在上传时或是此后的任意时候修改其访问权限.<br>
+                                 不同任务和算法对数据集的内容和格式要求可能不同，上传数据集前，请先了解您的目标任务要求的数据格式.
+                             </p>
+
+						 </div>
+						 </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                     <div class="card">
+                         <div class="card-content">
+                             <span class="card-title">新建数据集</span>
+                             <p>
+                                 您可以根据自己的需要命名数据集，并设置其访问权限.<br>
+                                 对于公开数据集，所有人都能查看和提交其上的任务.<br>
+                                 对于私有数据集，仅有创建者可见，并且仅有创建者能够查看和提交任务.
+                             </p><br>
+                             <div class="alert alert-warning">
+                                <strong>注意！</strong> 上传数据集前，请先了解您的目标任务要求的数据格式.
+                             </div>
+
+                             <form action="{% url 'SNA:d_upload' %}" method="post" enctype="multipart/form-data">
+
+                                 <div class="card-action">
+                                     <p>数据集名称：</p>
+                                        <input type ="text" name ="dataset_name">
+
+                                     <p>
+                                         数据文件：
+                                     </p>
+                                         <div class="file-field input-field">
+                                          <div class="btn teal white-text">
+                                              <i class="material-icons dp48">description</i>
+                                            <input type="file" name="filename" multiple="">
+                                          </div>
+
+                                          <div class="file-path-wrapper">
+                                            <input class="file-path validate valid" type="text" placeholder="选择一个数据文件">
+                                          </div>
+                                        </div>
+                                     <p>
+                                         访问权限：
+                                     </p>
+
+                                     <div class="switch">
+                                        <label>
+                                          <p>私有
+                                          <input type="checkbox" name="is_private">
+                                          <span class="lever"></span>
+                                          公开</p>
+                                        </label>
+                                    </div>
+                                     <br>
+
+                                     <button type="submit" class="teal waves-effect waves-light btn white-text">
+                                         提交</button>
+                                    {% csrf_token %}
+                                     </div>
+                            </form>
+
+						 </div>
+						 </div>
+                </div>
+            </div>
+
+
+            <footer><p>{{ sys_meta.SYS_NAME }} {{ sys_meta.SYS_VERSION }} {{ sys_meta.SYS_YEAR }}. {{ sys_meta.SYS_AUTHOR }} All rights reserved.</p></footer>
+
+        </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<!-- /. WRAPPER  -->
+<!-- JS Scripts-->
+<!-- jQuery Js -->
+<script src="{% static 'assets/js/jquery-1.10.2.js' %}"></script>
+
+<!-- Bootstrap Js -->
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'assets/materialize/js/materialize.min.js' %}"></script>
+
+<!-- Metis Menu Js -->
+<script src="{% static 'assets/js/jquery.metisMenu.js' %}"></script>
+<!-- Morris Chart Js -->
+<script src="{% static 'assets/js/morris/raphael-2.1.0.min.js' %}"></script>
+<script src="{% static 'assets/js/morris/morris.js' %}"></script>
+
+
+<script src="{% static 'assets/js/easypiechart.js' %}"></script>
+<script src="{% static 'assets/js/easypiechart-data.js' %}"></script>
+
+<script src="{% static 'assets/js/Lightweight-Chart/jquery.chart.js' %}"></script>
+
+<!-- Custom Js -->
+<script src="{% static 'assets/js/custom-scripts.js' %}"></script>
+
 
 </body>
-</html>

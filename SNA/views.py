@@ -191,7 +191,7 @@ def dataset_upload(req):
 
     model = Dataset(name=req.POST.get('dataset_name'), path=obj.name,
                     pub_date=datetime.now() + timedelta(hours=8), owner=req.user,
-                    is_private=req.POST.get('is_private') == "on")
+                    is_private=req.POST.get('is_private') is None)
     model.save()
 
     # 改名，防止文件重名
@@ -261,10 +261,14 @@ def tiles_plot(req):
     # 数据构造
     record_id = req.POST.get("record_id")
     data = get_network_meta(f"SNA/alg_result/{record_id}/")
+    linked_dataset = RunResult.objects.get(pk=record_id).dataset_used
 
     # 转发到可视化页面的模板
     return render(req, "SNA/tiles_plot.html",
-                  {"data": data})
+                  {"data": data,
+                   "sys_meta": SYS_META,
+                   "dataset_id": linked_dataset.pk,
+                   "cur_username": req.user.username})
 
 
 def about_sys(req):
@@ -276,8 +280,21 @@ def about_sys(req):
 
 
 def dataset_lt_single(req):
-    return render(req, "SNA/dataset_lt.html")
+    # 分开自己创建的数据集和公开数据集
+    own_lt = Dataset.objects.filter(owner=req.user)
+    pub_lt = Dataset.objects.filter(is_private=False)
+    return render(req, "SNA/dataset_lt.html",
+                  {
+                      "sys_meta": SYS_META,
+                      "own_lt": own_lt,
+                      "pub_lt": pub_lt,
+                      "cur_username": req.user.username,
+                  })
 
 
 def dataset_upload_single(req):
-    return render(req, "SNA/dataset_upload.html")
+    return render(req, "SNA/dataset_upload.html",
+                  {
+                      "sys_meta": SYS_META,
+                      "cur_username": req.user.username,
+                  })

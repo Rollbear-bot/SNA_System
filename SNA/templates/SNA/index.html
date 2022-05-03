@@ -189,7 +189,9 @@
 
 
                                 {% else %}
-                                    <p>没有可用的数据集</p>
+                                    <div class="alert alert-danger">
+                                        没有可用的数据集，您可以<strong><a class="blue-grey-text" href="{% url 'SNA:d_upload_single' %}">创建一个数据集</a></strong>.
+								    </div>
                                 {% endif %}
                            <div class="clearBoth"><br/></div>
 
