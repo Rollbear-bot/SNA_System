@@ -318,6 +318,13 @@
                     <div class="card">
                     <div class="card-content">
                         <span class="card-title">任务执行记录</span>
+                        <p>
+                            任务执行状态为“执行中”、“已完成”、“出错”和“未知”中的一种.<br>
+                            选定的任务启动后，刷新页面即可在任务执行记录中看到状态为“执行中”的新任务.<br>
+                            执行中的任务以子进程的形式在后端运行，此时可以浏览系统的其他模块或关闭网页，而后台执行的任务并<strong class="blue-grey-text">不会受到影响</strong>.<br>
+                            任务执行完毕后，对应记录的执行状态会自动变更为<strong class="blue-grey-text">“已完成”</strong>，此时可以查看执行结果.<br>
+                            若某记录的执行状态变为<strong class="blue-grey-text">“出错”</strong>，则说明算法抛出异常，此时应当检查数据集格式是否符合要求.
+                        </p><br>
                         <div class="table-responsive">
                                 <table class="table table-striped">
 <!--                                    表头 -->
