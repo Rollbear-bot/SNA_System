@@ -24,7 +24,7 @@ from django.contrib import messages
 
 BASE_DIR = "SNA/dataset_store/"
 SYS_META = {
-    "SYS_VERSION": "v2.0.220430",
+    "SYS_VERSION": "v2.2.220503",
     "SYS_AUTHOR": "Junhong Wu",
     "SYS_YEAR": "2022",
     "SYS_NAME": "SNA System",
@@ -260,15 +260,25 @@ def tiles_plot(req):
     """TILES的结果的可视化"""
     # 数据构造
     record_id = req.POST.get("record_id")
+    record = get_object_or_404(RunResult, pk=record_id)
     data = get_network_meta(f"SNA/alg_result/{record_id}/")
     linked_dataset = RunResult.objects.get(pk=record_id).dataset_used
+
+    try:
+        d_size_str = get_file_size(f"./SNA/dataset_store/{linked_dataset.pk}.{linked_dataset.path.split('.')[-1]}")
+    except Exception as e:
+        print(e)
+        d_size_str = "未知"
 
     # 转发到可视化页面的模板
     return render(req, "SNA/tiles_plot.html",
                   {"data": data,
                    "sys_meta": SYS_META,
                    "dataset_id": linked_dataset.pk,
-                   "cur_username": req.user.username})
+                   "cur_username": req.user.username,
+                   "dataset": linked_dataset,
+                   "d_size_str": d_size_str,
+                   "record": record})
 
 
 def about_sys(req):

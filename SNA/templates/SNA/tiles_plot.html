@@ -1,90 +1,310 @@
 <!DOCTYPE html>
-<html>
-  <head>
+{% load static %}
+
+<head>
     <meta charset="utf-8" />
-    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNA</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/materialize/css/materialize.min.css' %}" media="screen,projection" />
+    <!-- Bootstrap Styles-->
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="{% static 'assets/css/font-awesome.css' %}" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link href="{% static 'assets/js/morris/morris-0.4.3.min.css' %}" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="{% static 'assets/css/custom-styles.css' %}" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="{% static 'assets/js/Lightweight-Chart/cssCharts.css' %}">
+{#    引入Echart #}
     <script src="/static/js/echarts.js"></script>
-  </head>
 
+</head>
 <body>
-  <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
-  <div id="main" style="width: 600px;height:400px;"></div>
+    <!-- JS Scripts-->
+    <!-- jQuery Js -->
+    <script src="{% static 'assets/js/jquery-1.10.2.js' %}"></script>
 
-<script type="text/javascript">
-      // 基于准备好的dom，初始化echarts实例
-      var myChart = echarts.init(document.getElementById('main'));
+    <!-- Bootstrap Js -->
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
 
-      // network meta data
-      var lt = {{ data|safe }};
+    <script src="{% static 'assets/materialize/js/materialize.min.js' %}"></script>
 
-      // 指定图表的配置项和数据
-      option = {
-          title: {
-            text: ''
-          },
-          tooltip: {
-            trigger: 'axis'
-          },
-          legend: {
-            data: ['新生事件数量', '消亡事件数量', '分裂事件数量', '合并事件数量', '社区数量']
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: {}
-            }
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: lt.x_axis
-          },
-          yAxis: {
-            type: 'value'
-          },
-          series: [
-            {
-              name: '新生事件数量',
-              type: 'line',
-              {#stack: 'Total',#}
-              data: lt.birth_count,
-            },
-            {
-              name: '消亡事件数量',
-              type: 'line',
-              {#stack: 'Total',#}
-              data: lt.death_count,
-            },
-            {
-              name: '分裂事件数量',
-              type: 'line',
-              {#stack: 'Total',#}
-              data: lt.split_count
-            },
-            {
-              name: '合并事件数量',
-              type: 'line',
-              {#stack: 'Total',#}
-              data: lt.merge_count
-            },
-            {
-              name: '社区数量',
-              type: 'line',
-              stack: 'Total',
-              data: lt.comm_count
-            }
-          ]
-        };
-
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
-    </script>
+    <!-- Metis Menu Js -->
+    <script src="{% static 'assets/js/jquery.metisMenu.js' %}"></script>
+    <!-- Morris Chart Js -->
+    <script src="{% static 'assets/js/morris/raphael-2.1.0.min.js' %}"></script>
+    <script src="{% static 'assets/js/morris/morris.js' %}"></script>
 
 
+    <script src="{% static 'assets/js/easypiechart.js' %}"></script>
+    <script src="{% static 'assets/js/easypiechart-data.js' %}"></script>
+
+    <script src="{% static 'assets/js/Lightweight-Chart/jquery.chart.js' %}"></script>
+
+    <!-- Custom Js -->
+    <script src="{% static 'assets/js/custom-scripts.js' %}"></script>
+
+    <div id="wrapper">
+        <nav class="navbar navbar-default top-navbar" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand waves-effect waves-dark" href="{% url 'SNA:index' %}"><i class="large material-icons">insert_chart</i>
+                <strong>SNA</strong></a>
+
+            <div id="sideNav" class="waves-effect waves-dark" href=""><i class="material-icons dp48">toc</i></div>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+            <li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1">
+                <i class="fa fa-user fa-fw"></i>
+                <b>{{ cur_username }}</b>
+                <i class="material-icons right">arrow_drop_down</i>
+            </a></li>
+        </ul>
+    </nav>
+        <!-- Dropdown Structure 右上角下拉菜单 -->
+        <ul id="dropdown1" class="dropdown-content">
+            <li><a href="{% url 'SNA:login' %}"><i class="fa fa-sign-out fa-fw"></i>退出登录</a>
+            </li>
+        </ul>
+
+        <!--/. NAV TOP  -->
+        <!--/. NAV TOP  -->
+        <!--    侧边导航栏 -->
+        <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <!--  此处class active-menu 调整导航栏哪个标签处于选中状态-->
+                    <a href="{% url 'SNA:index' %}" class="waves-effect waves-dark">
+                        <i class="fa fa-desktop"></i>
+                        系统主页</a>
+                </li>
+                <li>
+                    <a href="{% url 'SNA:index' %}" class="active-menu waves-effect waves-dark">
+                        <i class="fa fa-table"></i>
+                        数据集与任务
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:d_lt_single' %}">数据集列表</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'SNA:d_upload_single' %}">上传数据集</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-user fa-fw"></i>
+                        个人中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:login' %}">切换账号</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'SNA:register' %}">新建账号</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-sitemap"></i>
+                        管理中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="/admin/auth/user/">用户管理</a>
+                        </li>
+                        <li>
+                            <a href="/admin">数据管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'SNA:about_sys' %}" class="waves-effect waves-dark">
+                        <i class="fa fa-qrcode"></i>
+                        关于系统</a>
+                </li>
+
+            </ul>
+
+        </div>
+    </nav>
+
+        <div id="page-wrapper">
+<!--        页面标题 -->
+        <div class="header">
+            <h1 class="page-header">
+                任务执行结果 <br>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="{% url 'SNA:index' %}">数据集与任务</a></li>
+                <li><a href="{% url 'SNA:d_detail' dataset_id %}">数据集详情</a></li>
+                <li class="active">任务执行记录</li>
+            </ol>
+        </div>
+<!--        页面内容-->
+        <div id="page-inner">
+            <div class="row">
+                <div class="col-md-12">
+                     <div class="card">
+                         <div class="card-content">
+                             <span class="card-title">执行记录简介</span>
+                             <p>
+                                 执行记录简介
+                             </p>
+                             <br>
+
+                             <div class="col-md-8">
+                                 <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>任务名称</strong></td>
+                                            <td>{{ record.task_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>关联数据集</strong></td>
+                                            <td><a href="{% url 'SNA:d_detail' dataset.pk %}">{{ dataset.name }}</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>数据文件大小</strong></td>
+                                            <td>{{ d_size_str }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>调用算法</strong></td>
+                                            <td>{{ record.alg_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>执行用户</strong></td>
+                                            <td>{{ record.exec_er.username }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>提交时间</strong></td>
+                                            <td>{{ record.exec_datetime }}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                             </div>
+
+
+
+                           <div class="clearBoth"><br/></div>
+						 </div>
+						 </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                     <div class="card">
+                         <div class="card-content">
+                             <div class="card-title">结果可视化</div>
+                             <p>
+                                 目标数据集上，社区数量、演化事件的数量随时间推移的变化如下图所示.
+                             </p>
+                             <br>
+
+                             <div id="main" style="width: auto;height:500px;"></div>
+                             <script type="text/javascript">
+                                  // 基于准备好的dom，初始化echarts实例
+                                  var myChart = echarts.init(document.getElementById('main'));
+
+                                  // network meta data
+                                  var lt = {{ data|safe }};
+
+                                  // 指定图表的配置项和数据
+                                  option = {
+                                      title: {
+                                        text: ''
+                                      },
+                                      tooltip: {
+                                        trigger: 'axis'
+                                      },
+                                      legend: {
+                                        data: ['新生事件数量', '消亡事件数量', '分裂事件数量', '合并事件数量', '社区数量']
+                                      },
+                                      grid: {
+                                        left: '3%',
+                                        right: '4%',
+                                        bottom: '3%',
+                                        containLabel: true
+                                      },
+                                      toolbox: {
+                                        feature: {
+                                          saveAsImage: {}
+                                        }
+                                      },
+                                      xAxis: {
+                                        type: 'category',
+                                        boundaryGap: false,
+                                        data: lt.x_axis
+                                      },
+                                      yAxis: {
+                                        type: 'value'
+                                      },
+                                      series: [
+                                        {
+                                          name: '新生事件数量',
+                                          type: 'line',
+                                          {#stack: 'Total',#}
+                                          data: lt.birth_count,
+                                        },
+                                        {
+                                          name: '消亡事件数量',
+                                          type: 'line',
+                                          {#stack: 'Total',#}
+                                          data: lt.death_count,
+                                        },
+                                        {
+                                          name: '分裂事件数量',
+                                          type: 'line',
+                                          {#stack: 'Total',#}
+                                          data: lt.split_count
+                                        },
+                                        {
+                                          name: '合并事件数量',
+                                          type: 'line',
+                                          {#stack: 'Total',#}
+                                          data: lt.merge_count
+                                        },
+                                        {
+                                          name: '社区数量',
+                                          type: 'line',
+                                          stack: 'Total',
+                                          data: lt.comm_count
+                                        }
+                                      ]
+                                    };
+
+                                  // 使用刚指定的配置项和数据显示图表。
+                                  myChart.setOption(option);
+                                </script>
+
+                           <div class="clearBoth"><br/></div>
+						 </div>
+						 </div>
+                </div>
+            </div>
+
+            <footer><p>{{ sys_meta.SYS_NAME }} {{ sys_meta.SYS_VERSION }} {{ sys_meta.SYS_YEAR }}. {{ sys_meta.SYS_AUTHOR }} All rights reserved.</p></footer>
+    </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    </div>
 </body>
-</html>
