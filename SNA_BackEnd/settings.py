@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-jh134r6^ypqluw6v501wa9wum&95q)1)g)@ht$b)rz$2&_brio
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -79,7 +79,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "SNA",
         "USER": "root",
-        "PASSWORD": "200075hong",
+        "PASSWORD": "200075hong",  # local
+        # "PASSWORD": "5bf6f8ba560e702c",  # tencent cloud
         "HOST": "127.0.0.1",
         "PORT": "3306",
     }
