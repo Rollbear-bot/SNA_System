@@ -24,8 +24,9 @@ class SliceTerminate(Exception):
 
 
 class CommTrace:
-    def __init__(self, comm_id, tiles_output_dir, screen_name_map_path, parse_relative_sub_comm=False,
+    def __init__(self, comm_id, tiles_output_dir, screen_name_map_path=None, parse_relative_sub_comm=False,
                  debug=False, in_sub_comm_trace=False, start_slice_id=0):
+        assert "graph-0.gz" in os.listdir(tiles_output_dir)
         self.comm_id = comm_id
         self.timeline = []
         self.all_timeline = []
@@ -42,13 +43,18 @@ class CommTrace:
         self._time_to_break = False
 
         self._screen_name_map_path = screen_name_map_path
-        self._screen_name_map = json.load(open(screen_name_map_path, "r", encoding="utf8"))
+        self._screen_name_map = json.load(open(screen_name_map_path, "r", encoding="utf8")) \
+            if self._screen_name_map_path else {}
 
         self._real_datetime_map = {}
 
         self._network_handler = CommSelector(self._tiles_output_dir)
 
         self._comm_trace()
+
+    @property
+    def data(self):
+        return self._data
 
     def dump_data(self, dump_path):
         json.dump(self._data, open(dump_path, "w", encoding="utf8"), indent=2)
