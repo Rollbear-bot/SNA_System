@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+{% load static %}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNA</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/materialize/css/materialize.min.css' %}" media="screen,projection" />
+    <!-- Bootstrap Styles-->
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="{% static 'assets/css/font-awesome.css' %}" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link href="{% static 'assets/js/morris/morris-0.4.3.min.css' %}" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="{% static 'assets/css/custom-styles.css' %}" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="{% static 'assets/js/Lightweight-Chart/cssCharts.css' %}">
+    {#    引入Echart #}
+    <script src="/static/js/echarts.js"></script>
+</head>
+<body>
+<!-- JS Scripts-->
+<!-- jQuery Js -->
+<script src="{% static 'assets/js/jquery-1.10.2.js' %}"></script>
+
+<!-- Bootstrap Js -->
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'assets/materialize/js/materialize.min.js' %}"></script>
+
+<!-- Metis Menu Js -->
+<script src="{% static 'assets/js/jquery.metisMenu.js' %}"></script>
+<!-- Morris Chart Js -->
+<script src="{% static 'assets/js/morris/raphael-2.1.0.min.js' %}"></script>
+<script src="{% static 'assets/js/morris/morris.js' %}"></script>
+
+
+<script src="{% static 'assets/js/easypiechart.js' %}"></script>
+<script src="{% static 'assets/js/easypiechart-data.js' %}"></script>
+
+<script src="{% static 'assets/js/Lightweight-Chart/jquery.chart.js' %}"></script>
+
+<!-- Custom Js -->
+<script src="{% static 'assets/js/custom-scripts.js' %}"></script>
+
+<div id="wrapper">
+    <nav class="navbar navbar-default top-navbar" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand waves-effect waves-dark" href="{% url 'SNA:index' %}"><i class="large material-icons">insert_chart</i>
+                <strong>SNA</strong></a>
+
+            <div id="sideNav" class="waves-effect waves-dark" href=""><i class="material-icons dp48">toc</i></div>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+            <li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1">
+                <i class="fa fa-user fa-fw"></i>
+                <b>{{ cur_username }}</b>
+                <i class="material-icons right">arrow_drop_down</i>
+            </a></li>
+        </ul>
+    </nav>
+    <!-- Dropdown Structure 右上角下拉菜单 -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="{% url 'SNA:login' %}"><i class="fa fa-sign-out fa-fw"></i>退出登录</a>
+        </li>
+    </ul>
+
+    <!--/. NAV TOP  -->
+    <!--/. NAV TOP  -->
+<!--    侧边导航栏 -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <!--  此处class active-menu 调整导航栏哪个标签处于选中状态-->
+                    <a href="{% url 'SNA:index' %}" class="waves-effect waves-dark">
+                        <i class="fa fa-desktop"></i>
+                        系统主页</a>
+                </li>
+                <li>
+                    <a href="#" class="active-menu waves-effect waves-dark">
+                        <i class="fa fa-table"></i>
+                        数据集与任务
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:d_lt_single' %}">数据集列表</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'SNA:d_upload_single' %}">上传数据集</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-user fa-fw"></i>
+                        个人中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{% url 'SNA:login' %}">切换账号</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'SNA:register' %}">新建账号</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="waves-effect waves-dark">
+                        <i class="fa fa-sitemap"></i>
+                        管理中心
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="/admin/auth/user/">用户管理</a>
+                        </li>
+                        <li>
+                            <a href="/admin">数据管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'SNA:about_sys' %}" class="waves-effect waves-dark">
+                        <i class="fa fa-qrcode"></i>
+                        关于系统</a>
+                </li>
+
+            </ul>
+
+        </div>
+    </nav>
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper">
+<!--        页面标题 -->
+        <div class="header">
+            <h1 class="page-header">
+                社区详情
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="{% url 'SNA:index' %}">数据集与任务</a></li>
+                <li><a href="{% url 'SNA:d_detail' record.dataset_used.pk %}">数据集详情</a></li>
+                <li class="active">任务执行记录</li>
+                <li class="active">社区详情</li>
+            </ol>
+
+        </div>
+<!--        页面内容-->
+        <div id="page-inner">
+
+            <div class="row">
+                <div class="col-md-12">
+                     <div class="card">
+                         <div class="card-content">
+                             <span class="card-title">社区[{{ comm_data.c_id }}]</span>
+                             <p>简介</p>
+						 </div>
+						 </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                     <div class="card">
+                         <div class="card-content">
+                             <span class="card-title">Timeline-时间片[{{ s_id }}]</span>
+                             <p>简介</p>
+                              <div id="2" style="width: 500px;height:500px;"></div>
+                              <script type="text/javascript">
+
+                                            var chartDom = document.getElementById('2');
+                                            var myChart = echarts.init(chartDom);
+                                            var option;
+
+                                            myChart.showLoading();
+                                            $.get('{% url "SNA:c_json" record.pk comm_data.c_id s_id %}', function (webkitDep) {
+                                              myChart.hideLoading();
+                                              option = {
+                                                legend: {
+                                                  data: ['HTMLElement', 'WebGL', 'SVG', 'CSS', 'Other']
+                                                },
+                                                series: [
+                                                  {
+                                                    type: 'graph',
+                                                    layout: 'force',
+                                                    animation: false,
+                                                    label: {
+                                                      position: 'right',
+                                                      formatter: '{b}'
+                                                    },
+                                                    draggable: true,
+                                                    data: webkitDep.nodes.map(function (node, idx) {
+                                                      node.id = idx;
+                                                      return node;
+                                                    }),
+                                                    categories: webkitDep.categories,
+                                                    force: {
+                                                      edgeLength: 5,
+                                                      repulsion: 20,
+                                                      gravity: 0.2
+                                                    },
+                                                    edges: webkitDep.links
+                                                  }
+                                                ]
+                                              };
+                                              myChart.setOption(option);
+                                            });
+
+                                            option && myChart.setOption(option);
+
+
+                                      </script>
+						 </div>
+                         <div class="card-action">
+                                {% if pre_s_id %}
+                                    <a href="{% url 'SNA:c_detail' record.pk comm_data.c_id pre_s_id %}" class="waves-effect waves-light btn blue-grey"><i class="material-icons left">fast_rewind</i>上一时间片</a>
+                                {% endif %}
+                                <div class="btn-group">
+                                  <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" aria-expanded="false">
+                                      选择时间片 <span class="caret"></span></button>
+                                  <ul class="dropdown-menu">
+                                      {% for slice in slices %}
+                                           <li><a class="blue-grey-text" href="{% url 'SNA:c_detail' record.pk comm_data.c_id slice.slice_id %}">时间片[{{ slice.slice_id }}]</a></li>
+                                      {% endfor %}
+                                  </ul>
+                                </div>
+                            {% if next_s_id %}
+                                <a href="{% url 'SNA:c_detail' record.pk comm_data.c_id next_s_id %}" class="waves-effect waves-light btn blue-grey"><i class="material-icons right">fast_forward</i>下一时间片</a>
+                            {% endif %}
+                         </div>
+                     </div>
+                </div>
+            </div>
+
+            <footer><p>{{ sys_meta.SYS_NAME }} {{ sys_meta.SYS_VERSION }} {{ sys_meta.SYS_YEAR }}. {{ sys_meta.SYS_AUTHOR }} All rights reserved.</p></footer>
+
+        </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<!-- /. WRAPPER  -->
+
+
+
+</body>

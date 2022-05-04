@@ -18,4 +18,6 @@ urlpatterns = [
     path('about', views.about_sys, name="about_sys"),
     path('d_upload_single', views.dataset_upload_single, name='d_upload_single'),
     path('d_lt', views.dataset_lt_single, name='d_lt_single'),
+    path('comm_detail/<int:r_id>/<int:c_id>/<int:s_id>', views.comm_detail, name='c_detail'),
+    path('comm_json_data/<int:r_id>/<int:c_id>/<int:s_id>/', views.get_comm_json_data, name='c_json'),
 ]

@@ -1,14 +1,15 @@
+import json
 import os
 
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseRedirect, JsonResponse
 from .models import Dataset, RunResult
 from django.template import loader
 from django.urls import reverse
 from datetime import datetime, timedelta
 from multiprocessing import Process
 from SNA.algorithms.run_tiles import run_tiles
-from SNA.algorithms.tiles_parser import get_network_meta
+from SNA.algorithms.tiles_parser import *
 from SNA.utils import get_file_size
 
 # Create your views here.
@@ -220,7 +221,7 @@ def dataset_alter(req):
 
     # 使用重定向防止表单重复提交
     return HttpResponseRedirect(
-        reverse('SNA:d_detail', args=(dataset_id, )))
+        reverse('SNA:d_detail', args=(dataset_id,)))
 
 
 def run_alg(req):
@@ -270,15 +271,21 @@ def tiles_plot(req):
         print(e)
         d_size_str = "未知"
 
+    # 结果解析数据
+    comm_lt = get_some_comm_id(f"SNA/alg_result/{record_id}/")
+
     # 转发到可视化页面的模板
     return render(req, "SNA/tiles_plot.html",
-                  {"data": data,
-                   "sys_meta": SYS_META,
-                   "dataset_id": linked_dataset.pk,
-                   "cur_username": req.user.username,
-                   "dataset": linked_dataset,
-                   "d_size_str": d_size_str,
-                   "record": record})
+                  {
+                      "data": data,
+                      "sys_meta": SYS_META,
+                      "dataset_id": linked_dataset.pk,
+                      "cur_username": req.user.username,
+                      "dataset": linked_dataset,
+                      "d_size_str": d_size_str,
+                      "record": record,
+                      "comm_lt": comm_lt,
+                  })
 
 
 def about_sys(req):
@@ -308,3 +315,61 @@ def dataset_upload_single(req):
                       "sys_meta": SYS_META,
                       "cur_username": req.user.username,
                   })
+
+
+def comm_detail(req, r_id, c_id, s_id):
+    record = get_object_or_404(RunResult, pk=r_id)
+    comm_data = {
+        "c_id": c_id,
+    }
+
+    # 设置暂存目录，提高访问速度
+    if f"{r_id}_{c_id}.json" not in os.listdir("SNA/comm_json_dump/"):
+        slices = get_slices_and_data(f"SNA/alg_result/{r_id}/", c_id)
+        json.dump(slices, open(f"SNA/comm_json_dump/{r_id}_{c_id}.json", "w", encoding="utf8"), indent=2)
+    else:
+        slices = json.load(open(f"SNA/comm_json_dump/{r_id}_{c_id}.json", "r", encoding="utf8"))
+
+    # sid=0表示社区的第一个时间片 -1表示社区最后一个时间片
+    first_s = slices[0]["slice_id"]
+    last_s = slices[-1]["slice_id"]
+    if s_id == 0 or s_id == "0":
+        s_id = first_s
+    elif s_id == -1 or s_id == "-1":
+        s_id = last_s
+
+    return render(req, "SNA/comm_detail.html",
+                  {
+                      "sys_meta": SYS_META,
+                      "cur_username": req.user.username,
+                      "comm_data": comm_data,
+                      "record": record,
+                      "slices": slices,
+                      "s_id": s_id,
+                      "pre_s_id": None if s_id == first_s else s_id - 1,
+                      "next_s_id": None if s_id == last_s else s_id + 1,
+                  })
+
+
+def get_comm_json_data(req, r_id, c_id, s_id):
+    slices = json.load(open(f"SNA/comm_json_dump/{r_id}_{c_id}.json", "r", encoding="utf8"))
+    start_s = slices[0]["slice_id"]
+    cur_slice = slices[s_id - start_s]
+
+    nodes = [{"name": m, "value": 1, "categories": 0} for m in cur_slice["members"]]
+    id_map = {m: i for i, m in enumerate(cur_slice["members"])}
+    links = [{"source": id_map[edge[0]], "target": id_map[edge[1]]} for edge in cur_slice["edgelist"]]
+
+    json_data = {
+        "type": "force",
+        "categories": [
+            {
+                "name": "Member",
+                "keyword": {},
+                "base": "Member"
+            },
+        ],
+        "nodes": nodes,
+        "links": links,
+    }
+    return JsonResponse(json_data)

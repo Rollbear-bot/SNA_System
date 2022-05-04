@@ -163,9 +163,9 @@
                 <div class="col-md-12">
                      <div class="card">
                          <div class="card-content">
-                             <span class="card-title">执行记录简介</span>
+                             <span class="card-title">任务概要</span>
                              <p>
-                                 执行记录简介
+                                 本任务类型为{{ record.task_name }}，由 {{ record.exec_er.username }} 在 {{ record.exec_datetime }} 提交.
                              </p>
                              <br>
 
@@ -214,7 +214,7 @@
                 <div class="col-md-12">
                      <div class="card">
                          <div class="card-content">
-                             <div class="card-title">结果可视化</div>
+                             <div class="card-title">网络概要</div>
                              <p>
                                  目标数据集上，社区数量、演化事件的数量随时间推移的变化如下图所示.
                              </p>
@@ -299,6 +299,38 @@
                            <div class="clearBoth"><br/></div>
 						 </div>
 						 </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-title">
+                                网络中的代表性社区
+                            </div>
+                            <p>
+                                动态社区具有其生存周期，即在动态网络时间线中的某时诞生，而在之后的某时消亡.<br>
+                                在社区的时间线中，其成员规模、内部联系、形态都会发生变化.
+                            </p><br>
+                            <ul class="collapsible" data-collapsible="accordion">
+                                {% for comm in comm_lt %}
+								<li>
+								  <div class="collapsible-header">
+                                      <i class="material-icons">toll</i>
+                                      {{ comm }}</div>
+								  <div class="collapsible-body">
+                                      <p>
+                                          hello<br>
+                                          <a href="{% url 'SNA:c_detail' record.pk comm 0 %}" class="waves-effect waves-light btn blue-grey">查看详情</a>
+                                      </p>
+
+                                  </div>
+								</li>
+                                {% endfor %}
+							  </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
