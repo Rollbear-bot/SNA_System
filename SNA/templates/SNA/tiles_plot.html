@@ -318,11 +318,13 @@
 								<li>
 								  <div class="collapsible-header">
                                       <i class="material-icons">toll</i>
-                                      {{ comm }}</div>
+                                      社区[{{ comm.c_id }}]</div>
 								  <div class="collapsible-body">
                                       <p>
-                                          hello<br>
-                                          <a href="{% url 'SNA:c_detail' record.pk comm 0 %}" class="waves-effect waves-light btn blue-grey">查看详情</a>
+                                          该社区生存区间为 {{ comm.datetime_s }} ~ {{ comm.datetime_e }}，共计 {{ comm.num_slice }} 个时间片.<br>
+                                          {{ comm.most_popu_str }}<br>
+                                          <br>
+                                          <a href="{% url 'SNA:c_detail' record.pk comm.c_id 0 %}" class="waves-effect waves-light btn blue-grey">查看详情</a>
                                       </p>
 
                                   </div>

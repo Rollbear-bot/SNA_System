@@ -272,7 +272,7 @@ def tiles_plot(req):
         d_size_str = "未知"
 
     # 结果解析数据
-    comm_lt = get_some_comm_id(f"SNA/alg_result/{record_id}/")
+    comm_meta = get_some_comm_meta(f"SNA/alg_result/{record_id}/")
 
     # 转发到可视化页面的模板
     return render(req, "SNA/tiles_plot.html",
@@ -284,7 +284,7 @@ def tiles_plot(req):
                       "dataset": linked_dataset,
                       "d_size_str": d_size_str,
                       "record": record,
-                      "comm_lt": comm_lt,
+                      "comm_lt": comm_meta,
                   })
 
 
