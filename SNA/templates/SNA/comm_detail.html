@@ -153,7 +153,7 @@
             <ol class="breadcrumb">
                 <li><a href="{% url 'SNA:index' %}">数据集与任务</a></li>
                 <li><a href="{% url 'SNA:d_detail' record.dataset_used.pk %}">数据集详情</a></li>
-                <li class="active">任务执行记录</li>
+                <li><a href="{% url 'SNA:show_result' record.pk %}">任务执行记录</a></li>
                 <li class="active">社区详情</li>
             </ol>
 

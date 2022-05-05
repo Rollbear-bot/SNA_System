@@ -25,7 +25,7 @@ from django.contrib import messages
 
 DATA_STORE_BASE_DIR = "SNA/dataset_store/"
 SYS_META = {
-    "SYS_VERSION": "v2.5.220505",
+    "SYS_VERSION": "v2.6.220505",
     "SYS_AUTHOR": "Junhong Wu",
     "SYS_YEAR": "2022",
     "SYS_NAME": "SNA System",
@@ -257,13 +257,13 @@ def run_alg(req):
         reverse('SNA:d_detail', args=(dataset.id,)))
 
 
-def tiles_plot(req):
+def tiles_plot(req, r_id):
     """TILES的结果的可视化"""
     # 数据构造
-    record_id = req.POST.get("record_id")
-    record = get_object_or_404(RunResult, pk=record_id)
-    data = get_network_meta(f"SNA/alg_result/{record_id}/")
-    linked_dataset = RunResult.objects.get(pk=record_id).dataset_used
+    # record_id = req.POST.get("record_id")
+    record = get_object_or_404(RunResult, pk=r_id)
+    data = get_network_meta(f"SNA/alg_result/{r_id}/")
+    linked_dataset = RunResult.objects.get(pk=r_id).dataset_used
 
     try:
         d_size_str = get_file_size(f"./SNA/dataset_store/{linked_dataset.pk}.{linked_dataset.path.split('.')[-1]}")
@@ -272,7 +272,7 @@ def tiles_plot(req):
         d_size_str = "未知"
 
     # 结果解析数据
-    comm_meta = get_some_comm_meta(f"SNA/alg_result/{record_id}/")
+    comm_meta = get_some_comm_meta(f"SNA/alg_result/{r_id}/")
 
     # 转发到可视化页面的模板
     return render(req, "SNA/tiles_plot.html",

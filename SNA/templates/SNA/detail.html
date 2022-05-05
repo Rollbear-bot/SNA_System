@@ -125,7 +125,7 @@
                 数据集详情
             </h1>
             <ol class="breadcrumb">
-                <li><a href="{% url 'SNA:index' %}">数据集与任务</a></li>
+                <li><a href="{% url 'SNA:d_lt_single' %}">数据集列表</a></li>
                 <li class="active">数据集详情</li>
             </ol>
 
@@ -349,14 +349,10 @@
                                                 <td>{{ record.exec_datetime }}</td>
                                                 <td>{{ record.status }}</td>
                                                 <td> {% if record.show_result %}
-                                                    <form action="{% url 'SNA:show_result' %}" method="post">
-                                                        {% csrf_token %}
-                                                        <input type="text" value="{{ record.pk }}" name="record_id" hidden>
-                                                        <button type="submit" class="waves-effect waves-light btn blue-grey">
-                                                            <i class="material-icons left">assessment</i>
-                                                                查看结果
-                                                        </button>
-                                                    </form>
+                                                    <a href="{% url 'SNA:show_result' record.pk %}" class="waves-effect waves-light btn blue-grey">
+                                                        <i class="material-icons left">assessment</i>
+                                                        查看结果
+                                                    </a>
                                                     {% else %} ---
                                                     {% endif %}
                                                 </td>
