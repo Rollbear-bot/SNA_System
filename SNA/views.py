@@ -23,9 +23,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 
-BASE_DIR = "SNA/dataset_store/"
+DATA_STORE_BASE_DIR = "SNA/dataset_store/"
 SYS_META = {
-    "SYS_VERSION": "v2.3.220503",
+    "SYS_VERSION": "v2.5.220505",
     "SYS_AUTHOR": "Junhong Wu",
     "SYS_YEAR": "2022",
     "SYS_NAME": "SNA System",
@@ -246,7 +246,7 @@ def run_alg(req):
         if not os.path.exists(dump_dir):
             os.mkdir(dump_dir)
         p = Process(target=run_tiles,
-                    args=(BASE_DIR + str(dataset.pk) + "." + dataset.path.split(".")[-1],
+                    args=(DATA_STORE_BASE_DIR + str(dataset.pk) + "." + dataset.path.split(".")[-1],
                           dump_dir))
     elif alg_name == "TGAT":
         pass
@@ -338,6 +338,18 @@ def comm_detail(req, r_id, c_id, s_id):
     elif s_id == -1 or s_id == "-1":
         s_id = last_s
 
+    cur_slice = slices[s_id - first_s]
+    num_members = len(cur_slice["members"])
+    num_links = len(cur_slice["edgelist"])
+    avg_node_degree = 2 * num_links / num_members
+
+    node_degree_map = {}
+    for e in cur_slice["edgelist"]:
+        for n in e[:2]:
+            node_degree_map[n] = node_degree_map.get(n, 0) + 1
+    sorted_member_cluster = sorted([{"n_id": e, "d": node_degree_map[e]} for e in cur_slice["members"]],
+                                   key=lambda c: c["d"], reverse=True)
+
     return render(req, "SNA/comm_detail.html",
                   {
                       "sys_meta": SYS_META,
@@ -345,6 +357,11 @@ def comm_detail(req, r_id, c_id, s_id):
                       "comm_data": comm_data,
                       "record": record,
                       "slices": slices,
+                      "cur_slice": cur_slice,
+                      "num_members": num_members,
+                      "num_links": num_links,
+                      "avg_node_degree": f"{avg_node_degree: .4f}",
+                      "sorted_member_cluster": sorted_member_cluster,
                       "s_id": s_id,
                       "pre_s_id": None if s_id == first_s else s_id - 1,
                       "next_s_id": None if s_id == last_s else s_id + 1,
@@ -356,9 +373,15 @@ def get_comm_json_data(req, r_id, c_id, s_id):
     start_s = slices[0]["slice_id"]
     cur_slice = slices[s_id - start_s]
 
-    nodes = [{"name": m, "value": 1, "categories": 0} for m in cur_slice["members"]]
     id_map = {m: i for i, m in enumerate(cur_slice["members"])}
     links = [{"source": id_map[edge[0]], "target": id_map[edge[1]]} for edge in cur_slice["edgelist"]]
+
+    node_degree_map = {}
+    for e in cur_slice["edgelist"]:
+        for n in e[:2]:
+            node_degree_map[n] = node_degree_map.get(n, 0) + 1
+
+    nodes = [{"name": m, "value": 1, "symbolSize": 3 * node_degree_map[m], "categories": 0} for m in cur_slice["members"]]
 
     json_data = {
         "type": "force",

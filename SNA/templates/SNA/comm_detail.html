@@ -148,7 +148,7 @@
 <!--        页面标题 -->
         <div class="header">
             <h1 class="page-header">
-                社区详情
+                社区[{{ comm_data.c_id }}]详情
             </h1>
             <ol class="breadcrumb">
                 <li><a href="{% url 'SNA:index' %}">数据集与任务</a></li>
@@ -162,65 +162,60 @@
         <div id="page-inner">
 
             <div class="row">
-                <div class="col-md-12">
-                     <div class="card">
-                         <div class="card-content">
-                             <span class="card-title">社区[{{ comm_data.c_id }}]</span>
-                             <p>简介</p>
-						 </div>
-						 </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-8">
                      <div class="card">
                          <div class="card-content">
                              <span class="card-title">Timeline-时间片[{{ s_id }}]</span>
-                             <p>简介</p>
-                              <div id="2" style="width: 500px;height:500px;"></div>
+                             <p>当前时间区间内（{{ cur_slice.datetime_s }} ~ {{ cur_slice.datetime_e }}）社区内部结构如下图所示.</p>
+                              <div id="2" style="width: 600px;height:360px;"></div>
                               <script type="text/javascript">
 
-                                            var chartDom = document.getElementById('2');
-                                            var myChart = echarts.init(chartDom);
-                                            var option;
+                                    var chartDom = document.getElementById('2');
+                                    var myChart = echarts.init(chartDom);
+                                    var option;
 
-                                            myChart.showLoading();
-                                            $.get('{% url "SNA:c_json" record.pk comm_data.c_id s_id %}', function (webkitDep) {
-                                              myChart.hideLoading();
-                                              option = {
-                                                legend: {
-                                                  data: ['HTMLElement', 'WebGL', 'SVG', 'CSS', 'Other']
-                                                },
-                                                series: [
-                                                  {
-                                                    type: 'graph',
-                                                    layout: 'force',
-                                                    animation: false,
-                                                    label: {
-                                                      position: 'right',
-                                                      formatter: '{b}'
-                                                    },
-                                                    draggable: true,
-                                                    data: webkitDep.nodes.map(function (node, idx) {
-                                                      node.id = idx;
-                                                      return node;
-                                                    }),
-                                                    categories: webkitDep.categories,
-                                                    force: {
-                                                      edgeLength: 5,
-                                                      repulsion: 20,
-                                                      gravity: 0.2
-                                                    },
-                                                    edges: webkitDep.links
-                                                  }
-                                                ]
-                                              };
-                                              myChart.setOption(option);
-                                            });
+                                    myChart.showLoading();
+                                    $.get('{% url "SNA:c_json" record.pk comm_data.c_id s_id %}', function (webkitDep) {
+                                      myChart.hideLoading();
+                                      option = {
+                                        legend: {
+                                          data: ['HTMLElement', 'WebGL', 'SVG', 'CSS', 'Other']
+                                        },
+                                        series: [
+                                          {
+                                            type: 'graph',
+                                            layout: 'force',
+                                            animation: false,
+                                            label: {
+                                              position: 'right',
+                                              formatter: '{b}'
+                                            },
+                                            draggable: true,
+                                            data: webkitDep.nodes.map(function (node, idx) {
+                                              node.id = idx;
+                                              return node;
+                                            }),
+                                            categories: webkitDep.categories,
+                                              // 设置力引导布局的参数
+                                            force: {
+                                              edgeLength: 60,
+                                              repulsion: 150,
+                                              gravity: 0.1,
+                                                roam: true,
+                                            },
+                                              itemStyle: {
+                                                borderType: "solid",
+                                                  borderWidth: 1,
+                                                   borderColor: '#2c2c2c'
+                                              },
+                                            edges: webkitDep.links
+                                          }
+                                        ]
+                                      };
+                                      myChart.setOption(option);
+                                    });
 
-                                            option && myChart.setOption(option);
-
+                                    option && myChart.setOption(option);
 
                                       </script>
 						 </div>
@@ -233,7 +228,7 @@
                                       选择时间片 <span class="caret"></span></button>
                                   <ul class="dropdown-menu">
                                       {% for slice in slices %}
-                                           <li><a class="blue-grey-text" href="{% url 'SNA:c_detail' record.pk comm_data.c_id slice.slice_id %}">时间片[{{ slice.slice_id }}]</a></li>
+                                           <li><a class="blue-grey-text" href="{% url 'SNA:c_detail' record.pk comm_data.c_id slice.slice_id %}">时间片[{{ slice.slice_id }}] {{ slice.datetime_s }} ~ {{ slice.datetime_e }}</a></li>
                                       {% endfor %}
                                   </ul>
                                 </div>
@@ -242,6 +237,70 @@
                             {% endif %}
                          </div>
                      </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-title">
+                                时间片概要
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>时间区间</strong></td>
+                                            <td>{{ cur_slice.datetime_s }} ~ {{ cur_slice.datetime_e }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>节点数量</strong></td>
+                                            <td>{{ num_members }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>链接数量</strong></td>
+                                            <td>{{ num_links }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>平均节点度</strong></td>
+                                            <td>{{ avg_node_degree }}</td>
+                                        </tr>
+                                       <tr>
+                                            <td><strong>演化事件</strong></td>
+                                            <td>{{ avg_node_degree }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-title">
+                                社区成员
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <td><strong>节点</strong></td>
+                                            <td><strong>影响力（度）</strong></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for c in sorted_member_cluster %}
+                                        <tr>
+                                            <td>{{ c.n_id }}</td>
+                                            <td>{{ c.d }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
 
