@@ -165,12 +165,7 @@
                                                         <p>本数据集由 {{ dataset.owner.username }} 上传于 {{ dataset.pub_date }}</p>
                                                     </div>
                                                       <div class="card-action">
-                                                          <form action="{% url 'SNA:d_detail' dataset.id %}" method="get">
-                                                              <button type="submit" class="waves-effect waves-light btn blue-grey">
-                                                                <i class="material-icons left">pageview</i>
-                                                                    <a class="white-text" href="{% url 'SNA:d_detail' dataset.id %}">查看详情</a>
-                                                                </button>
-                                                          </form>
+                                                          <a href="{% url 'SNA:d_detail' dataset.id %}" class="waves-effect waves-light btn blue-grey"><i class="material-icons left">pageview</i>查看详情</a>
                                                       </div>
                                               </div>
                                         </li>
@@ -220,12 +215,9 @@
                                                         <p>本数据集由 {{ dataset.owner.username }} 上传于 {{ dataset.pub_date }}</p>
                                                     </div>
                                                       <div class="card-action">
-                                                          <form action="{% url 'SNA:d_detail' dataset.id %}" method="get">
-                                                              <button type="submit" class="waves-effect waves-light btn blue-grey">
-                                                                <i class="material-icons left">pageview</i>
-                                                                    <a class="white-text" href="{% url 'SNA:d_detail' dataset.id %}">查看详情</a>
-                                                                </button>
-                                                          </form>
+                                                          <a href="{% url 'SNA:d_detail' dataset.id %}" class="waves-effect waves-light btn blue-grey">
+                                                              <i class="material-icons left">pageview</i>查看详情
+                                                          </a>
                                                       </div>
                                               </div>
                                         </li>
